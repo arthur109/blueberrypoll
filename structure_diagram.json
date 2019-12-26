@@ -1,0 +1,35 @@
+{
+    "rooms":{
+        "orange_logic":{
+            "users":{
+                "userID1":{
+                    "name": "John Doe"
+                },
+                "userID2":{
+                    "name": "Billy Bob"
+                }
+            },
+            "online_users": ["userID1", "userID2"],
+            "poll_in_session": "pollID3",
+            "polls":{
+                "pollID3":{
+                    "question": "Do you like cats?",
+                    "type": "TEXT_FEILD",
+                    "creator": "userID1", 
+                    "timestamp": 1724352718263,
+                    "anonymous": true,
+                    "answers":[
+                        {
+                            "type":"TEXT_FEILD",
+                            "respondant": "userID1",
+                            "answer": "yes! very much",
+                            "poll": "pollID3"
+                        }
+                    ]
+
+                }
+            }
+        }
+
+    }
+}
