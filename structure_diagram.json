@@ -1,35 +1,33 @@
 {
-    "rooms":{
-        "orange_logic":{
-            "users":{
-                "userID1":{
-                    "name": "John Doe"
-                },
-                "userID2":{
-                    "name": "Billy Bob"
-                }
+    "orange_logic": {
+        "users": {
+            "userID1": {
+                "name": "John Doe",
+                "online": false
             },
-            "online_users": ["userID1", "userID2"],
-            "poll_in_session": "pollID3",
-            "polls":{
-                "pollID3":{
-                    "question": "Do you like cats?",
-                    "type": "TEXT_FEILD",
-                    "creator": "userID1", 
-                    "timestamp": 1724352718263,
-                    "anonymous": true,
-                    "answers":[
-                        {
-                            "type":"TEXT_FEILD",
-                            "respondant": "userID1",
-                            "answer": "yes! very much",
-                            "poll": "pollID3"
-                        }
-                    ]
-
-                }
+            "userID2": {
+                "name": "Billy Bob",
+                "online": true
+            }
+        },
+        "poll_in_session": "pollID3",
+        "polls": {
+            "pollID3": {
+                "question": "Do you like cats?",
+                "type": "AnswerType.TEXT_FEILD",
+                "creator": "userID1",
+                "results_visible":false,
+                "timestamp": 1724352718263,
+                "anonymous": "PrivacyType.SHOW_NAMES",
+                "answers": [
+                    {
+                        "type": "AnswerType.TEXT_FEILD",
+                        "respondant": "userID1",
+                        "answer": "yes! very much",
+                        "poll": "pollID3"
+                    }
+                ]
             }
         }
-
     }
 }

@@ -1,6 +1,8 @@
 import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
-import 'dart:html';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'dart:html';
 import 'login.dart';
 import 'session_info.dart';
 
@@ -26,8 +28,8 @@ void main() {
     theme: ThemeData(
       // Define the default Brightness and Colors
       brightness: Brightness.light,
-      primaryColor: Colors.indigoAccent,
-      accentColor: Colors.white,
+      primaryColor: Colors.black,
+      accentColor: Colors.orangeAccent,
     ),
     home: LoginPage(),
   ));
