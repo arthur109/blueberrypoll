@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:blueberrypoll/YES_NO.dart';
 import 'package:blueberrypoll/new_poll.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase/firebase.dart';
 import 'online_users_list.dart';
+import 'poll_in_session_viewer.dart';
 
 import 'session_info.dart';
 
@@ -16,10 +18,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Stream<QueryEvent> pollInSessionStream = SessionInfo.database
-            .ref(SessionInfo.organization + "/poll_in_session")
-            .onValue.asBroadcastStream();
 
+  final CurrentPollViewer currentPollViewer = new CurrentPollViewer();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
         if (snapshot.data) {
           return NewPollMenu();
         } else {
-          return showPoll();
+          return currentPollViewer;
         }
       },
     );
@@ -65,52 +65,6 @@ class _HomePageState extends State<HomePage> {
         HomePage.creatingPollStream.sink.add(true);
       }),
     );
-  }
-
-  Widget showPoll() {
-    return StreamBuilder<QueryEvent>(
-        stream: pollInSessionStream, // a Stream<int> or null
-        builder: (BuildContext context, AsyncSnapshot<QueryEvent> snapshot) {
-          if (snapshot.hasData) {
-            String pollId = snapshot.data.snapshot.val();
-            if (pollId == "none") {
-              return noPollInSession();
-            } else {
-              return StreamBuilder<QueryEvent>(
-                  stream: SessionInfo.database
-                      .ref(SessionInfo.organization +
-                          "/polls/" +
-                          pollId +
-                          '/type')
-                      .onValue, // a Stream<int> or null
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QueryEvent> snapshot) {
-                    if (snapshot.hasData) {
-                      String pollType = snapshot.data.snapshot.val();
-                      if (pollType == AnswerType.YES_NO.toString()) {
-                        return Text("yes no poll");
-                      } else if (pollType ==
-                          AnswerType.YES_NO_NOOPINION.toString()) {
-                        return Text("yes no opinion poll");
-                      } else if (pollType == AnswerType.TEXT_FEILD.toString()) {
-                        return Text("text feild poll");
-                      } else if (pollType ==
-                          AnswerType.STAR_RATING.toString()) {
-                        return Text("star rating poll");
-                      }
-                    } else {
-                      return CupertinoActivityIndicator();
-                    }
-                  });
-            }
-          } else {
-            return noPollInSession();
-          }
-        });
-  }
-
-  Widget noPollInSession() {
-    return Text("No Poll In Session Widget");
   }
 
   @override

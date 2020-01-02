@@ -40,7 +40,7 @@ class UIGenerator {
         if (pollInfo["results_visible"]) {
           subtitleText = "Viewing results for the poll";
         } else {
-          subtitleText = "Waiting for results to be revealed for the poll";
+          subtitleText = "Results are not visible for this poll.";
         }
       }
     }
@@ -55,7 +55,8 @@ class UIGenerator {
       return Row(
         children: <Widget>[
           resultsVisibleToggleButton(pollID, pollInfo),
-          resetPollButton(pollID)
+          resetPollButton(pollID),
+          endPollButton(pollID, inSession)
         ],
       );
     } else {
@@ -67,6 +68,7 @@ class UIGenerator {
   }
 
   static bool alreadyAnsweredPoll(List<Map> answers) {
+    if(answers == null) return false;
     for (Map i in answers) {
       if (i['respondant'] == SessionInfo.userID) {
         return true;
@@ -88,7 +90,7 @@ class UIGenerator {
 
   static Widget resultsVisibleToggleButton(String pollID, Map pollInfo) {
     if (pollInfo["results_visible"]) {
-      return CupertinoButton.filled(
+      return MaterialButton(
         child: Text("Hide Results from Participants"),
         onPressed: () {
           SessionInfo.database
@@ -100,7 +102,7 @@ class UIGenerator {
         },
       );
     }
-    return CupertinoButton.filled(
+    return FlatButton(
       child: Text("Show Results to Participants"),
       onPressed: () {
         SessionInfo.database
@@ -115,7 +117,7 @@ class UIGenerator {
 
   static Widget endPollButton(String pollID, bool inSession) {
     if (inSession) {
-      return CupertinoButton.filled(
+      return MaterialButton(
         child: Text("End Poll"),
         onPressed: () {
           SessionInfo.database

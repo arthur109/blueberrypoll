@@ -1,0 +1,6 @@
+Database (String organization):
+	User signIn(UserSnapshot userSnapshot):
+	void cacheUser(UserSnapshot):
+	UserSnapshot getlastCashedUser():
+	
+	

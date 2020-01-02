@@ -12,7 +12,7 @@ import 'session_info.dart';
 class YesNoPoll extends StatefulWidget {
   final String pollID;
   final bool inSession;
-  const YesNoPoll({Key key, this.pollID, this.inSession}) : super(key: key);
+  const YesNoPoll(this.pollID, this.inSession);
   @override
   _YesNoPollState createState() => _YesNoPollState();
 }
@@ -25,7 +25,16 @@ class _YesNoPollState extends State<YesNoPoll> {
     return StreamBuilder<QueryEvent>(
         stream: pollStream, // a Stream<int> or null
         builder: (BuildContext context, AsyncSnapshot<QueryEvent> snapshot) {
-          if (snapshot.hasData) {}
+          if (snapshot.hasData) {
+            return Column(
+              children: <Widget>[
+                UIGenerator.pollHeader(snapshot.data.snapshot.val(), widget.inSession),
+                UIGenerator.pollManager(widget.pollID, snapshot.data.snapshot.val(), widget.inSession)
+              ],
+            );
+          }else{
+            return CupertinoActivityIndicator();
+          }
         });
   }
 

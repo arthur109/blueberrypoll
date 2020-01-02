@@ -18,7 +18,7 @@ class _OnlineUsersListState extends State<OnlineUsersList> {
     return ConstrainedBox(
         constraints: new BoxConstraints(
           minWidth: 100,
-          maxWidth: 500
+          maxWidth: 250
         ),
         child: StreamBuilder<QueryEvent>(
           stream: ref

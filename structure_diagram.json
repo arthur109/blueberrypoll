@@ -7,10 +7,10 @@
             },
             "userID2": {
                 "name": "Billy Bob",
-                "online": true
+                "online": false
             }
         },
-        "poll_in_session": "pollID3",
+        "poll_in_session": "none",
         "polls": {
             "pollID3": {
                 "question": "Do you like cats?",
