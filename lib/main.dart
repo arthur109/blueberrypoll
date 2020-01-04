@@ -1,15 +1,6 @@
 import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-// import 'dart:html';
-import 'login.dart';
-import 'session_info.dart';
-
-// void bob(Event data) {
-//   print("bob");
-//   print((data as HashChangeEvent).newUrl);
-// }
 
 void main() {
   initializeApp(
@@ -22,7 +13,6 @@ void main() {
       appId: "1:176622864765:web:079ec753ca85e82ae9e414",
       measurementId: "G-63200ZDRD0");
   analytics();
-  SessionInfo.database = database();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -31,7 +21,8 @@ void main() {
       primaryColor: Colors.black,
       accentColor: Colors.orangeAccent,
     ),
-    home: LoginPage(),
+    home: Scaffold(
+      
+    ),
   ));
-  // window.onHashChange.listen(bob);
 }

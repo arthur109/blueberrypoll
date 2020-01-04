@@ -1,0 +1,48 @@
+{
+    "users": {
+        "userID1": {
+            "name": "John Doe",
+            "online": false
+        },
+        "userID2": {
+            "name": "Billy Bob",
+            "online": false
+        }
+    },
+    "polls": {
+        "pollID3": {
+            "isActive" : true,
+            "question": "Do you like cats?",
+            "type": "AnswerType.TEXT_FEILD",
+            "creator": "userID1",
+            "results_visible":false,
+            "timestamp": 1724352718263,
+            "anonymous": "PrivacyType.SHOW_NAMES",
+            "answers": [
+                {
+                    "type": "AnswerType.TEXT_FEILD",
+                    "respondant": "userID1",
+                    "answer": "yes! very much",
+                    "poll": "pollID3"
+                }
+            ]
+        },
+        "pollID1": {
+            "isActive" : false,
+            "question": "Do you like cats?",
+            "type": "AnswerType.TEXT_FEILD",
+            "creator": "userID1",
+            "results_visible":false,
+            "timestamp": 1724352718263,
+            "anonymous": "PrivacyType.SHOW_NAMES",
+            "answers": [
+                {
+                    "type": "AnswerType.TEXT_FEILD",
+                    "respondant": "userID1",
+                    "answer": "yes! very much",
+                    "poll": "pollID3"
+                }
+            ]
+        }
+    }
+}

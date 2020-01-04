@@ -26,8 +26,6 @@
 			String id
 			Stream<Bool> isOnline
 			
-			UserSnapshot getSnapshot()
-			
 		PollSnapshot(String id, String question, AnswerType questionType, bool isAnonymous, int timestamp, String creatorId, List<Answer> Answers, bool areResultsVisible): 
 			String id
 			String question
@@ -48,15 +46,15 @@
 			int timestamp
 			String creatorId
 			Stream<List<Answer>> answers
-			Stream<Bool> areResultsVisible
+			Stream<Bool> areResult 
+			hsVisible
 			Stream<Bool> isActive
 				
 			Stream<PollSummary> getSummaryStream(User user) // stream is hooked up to areResults visible stream, and will push new object if it changes
 			Stream<bool> getAnswerOfUser(User user) // returns null if no answer 
 			bool isCreator(User user)
 			Future<void> setResultVisibility(bool visibility)
-			
-			PollSnapshot getSnapshot();
+
 			
 			
 		//--------------------------------------------------------
@@ -105,16 +103,7 @@
 			AnswerEnumYES_NO_NOOPINION answer
 			static Stream<PollSummaryYES_NO> generateSummary(Stream<List<Answer>>);
 			
-		 //--------------------------------------------------------
-		 
-		 PollSummaryYES_NO extends PollSummary(Poll poll, bool hasResultVisibilityPrivilege, int yesCount, int noCount, int pendingCount);
-			int yesCount
-			int noCount
-			
 		
-		AnswerYES_NO extends Answer(String respondantId, int timestamp, bool pending, AnswerEnumYES_NO answer,)
-			AnswerEnumYES_NO answer
-			static Stream<PollSummaryYES_NO> generateSummary(Stream<List<Answer>>); 
 			
 
 	

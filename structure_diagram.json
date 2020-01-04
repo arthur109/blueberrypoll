@@ -10,7 +10,6 @@
                 "online": false
             }
         },
-        "poll_in_session": "none",
         "polls": {
             "pollID3": {
                 "question": "Do you like cats?",
