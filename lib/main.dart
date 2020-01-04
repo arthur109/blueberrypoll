@@ -1,18 +1,28 @@
+import 'package:blueberrypoll/Data/database_interface.dart';
+import 'package:blueberrypoll/Logic/user.dart';
 import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 
+void main() async {
+  DatabaseInterface database =
+      new DatabaseInterface(organization: "dev_organization");
 
-void main() {
-  initializeApp(
-      apiKey: "AIzaSyDZ_zGoNqGa0qnpWhUYnBciAY2cm_mS924",
-      authDomain: "blueberry-poll-one.firebaseapp.com",
-      databaseURL: "https://blueberry-poll-one.firebaseio.com",
-      projectId: "blueberry-poll-one",
-      storageBucket: "blueberry-poll-one.appspot.com",
-      messagingSenderId: "176622864765",
-      appId: "1:176622864765:web:079ec753ca85e82ae9e414",
-      measurementId: "G-63200ZDRD0");
-  analytics();
+  UserSnapshot credentials = new UserSnapshot(name: "Arthur F");
+  UserP signedInUser = await database.signIn(credentials);
+  signedInUser.allInfoStream.listen((UserSnapshot data) {
+    print("Allinfo: "+data.toMap().toString());
+  });
+
+  signedInUser.isOnline.listen((bool data) {
+    print("isOnline: "+data.toString());
+  });
+
+  signedInUser.name.listen((String data) {
+    print("Name: "+data.toString());
+  });
+
+  database.setOnlineStatusHooks(signedInUser);
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -22,7 +32,7 @@ void main() {
       accentColor: Colors.orangeAccent,
     ),
     home: Scaffold(
-      
+      body: Text("hello"),
     ),
   ));
 }

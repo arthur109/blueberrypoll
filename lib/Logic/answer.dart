@@ -16,7 +16,7 @@ class Answer {
     AnswerType.STAR_RATING: AnswerSTAR_RATING
   };
   bool pending;
-  User respondant;
+  UserP respondant;
   int timestamp;
 
   Answer({

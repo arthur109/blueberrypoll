@@ -10,9 +10,9 @@ import 'package:test/test.dart';
 void main() {
   List<AnswerYES_NO> answerListOne;
   List<AnswerYES_NO> answerListTwo;
-  User respondant;
+  UserP respondant;
   setUp(() {
-    respondant = User("my id");
+    respondant = UserP("my id");
     answerListOne = [
       AnswerYES_NO(
           respondant: respondant,

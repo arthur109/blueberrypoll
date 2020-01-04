@@ -18,7 +18,7 @@ class PollSummaryTEXT_FEILD extends PollSummary {
 class AnswerTEXT_FEILD extends Answer {
   String answer;
   AnswerTEXT_FEILD({
-    @required User respondant,
+    @required UserP respondant,
     @required int timestamp,
     @required bool pending,
     @required this.answer,

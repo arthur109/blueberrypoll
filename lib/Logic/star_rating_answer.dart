@@ -27,7 +27,7 @@ class PollSummarySTAR_RATING extends PollSummary {
 class AnswerSTAR_RATING extends Answer {
   AnswerEnumSTAR_RATING answer;
   AnswerSTAR_RATING({
-    @required User respondant,
+    @required UserP respondant,
     @required int timestamp,
     @required bool pending,
     @required this.answer,

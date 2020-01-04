@@ -10,9 +10,9 @@ import 'package:test/test.dart';
 void main() {
   List<AnswerTEXT_FEILD> answerListOne;
   List<AnswerTEXT_FEILD> answerListTwo;
-  User respondant;
+  UserP respondant;
   setUp(() {
-    respondant = User("my id");
+    respondant = UserP("my id");
     answerListOne = [
       AnswerTEXT_FEILD(
           respondant: respondant, answer: "yo", timestamp: 1, pending: false),

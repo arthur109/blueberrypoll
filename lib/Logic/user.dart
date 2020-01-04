@@ -1,32 +1,69 @@
 import 'package:blueberrypoll/Data/database_interface.dart';
+import 'package:firebase/firebase.dart';
 import 'package:meta/meta.dart';
 
 class UserSnapshot {
   String id;
   String name;
-  String organization;
   bool isOnline;
   UserSnapshot({
-    @required this.id,
+    this.id,
     @required this.name,
-    @required this.organization,
-    @required this.isOnline,
+    this.isOnline = false,
   });
 
-  // Map toJson()
-  // Map fromJson()
+  Map toMap() {
+    return {UserP.NAME_FEILD: this.name, UserP.ONLINE_FEILD: this.isOnline};
+  }
+  // Map fromMap()
 }
 
-class User {
+class UserP {
+  static const NAME_FEILD = "name";
+  static const ONLINE_FEILD = "isOnline";
   DatabaseInterface database;
   Stream<UserSnapshot> allInfoStream;
   Stream<String> name;
-  String organization;
   String id;
   Stream<bool> isOnline;
-  User({
-    @required  this.id,
-    @required this.database,
-  });
-}
+  UserP({@required this.id, @required this.database}) {
+    this.allInfoStream = this
+        .database
+        .entryPoint
+        .child(DatabaseInterface.USERS_NODE + "/" + this.id)
+        .onValue
+        .map((QueryEvent data) {
+      Map userMap = data.snapshot.val();
+      return UserSnapshot(
+          id: this.id,
+          name: userMap[UserP.NAME_FEILD],
+          isOnline: userMap[UserP.ONLINE_FEILD]);
+    });
 
+    this.name = this
+        .database
+        .entryPoint
+        .child(DatabaseInterface.USERS_NODE +
+            "/" +
+            this.id +
+            "/" +
+            UserP.NAME_FEILD)
+        .onValue
+        .map((QueryEvent data) {
+      return data.snapshot.val();
+    });
+
+    this.isOnline = this
+        .database
+        .entryPoint
+        .child(DatabaseInterface.USERS_NODE +
+            "/" +
+            this.id +
+            "/" +
+            UserP.ONLINE_FEILD)
+        .onValue
+        .map((QueryEvent data) {
+      return data.snapshot.val();
+    });
+  }
+}

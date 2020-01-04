@@ -23,7 +23,7 @@ class PollSummaryYES_NO_NOOPINION extends PollSummary {
 class AnswerYES_NO_NOOPINION extends Answer {
   AnswerEnumYES_NO_NOOPINION answer;
   AnswerYES_NO_NOOPINION({
-    @required User respondant,
+    @required UserP respondant,
     @required int timestamp,
     @required bool pending,
     @required this.answer,
