@@ -13,8 +13,10 @@ class PollSummaryYES_NO extends PollSummary {
     @required this.yesCount,
     @required this.noCount,
     @required int pendingCount,
+    @required int totalCount,
   }) : super(
           pendingCount: pendingCount,
+          totalCount: totalCount,
         );
 }
 
@@ -58,15 +60,17 @@ class AnswerYES_NO extends Answer {
   }
 
   static Stream<PollSummaryYES_NO> generateSummaryStream(
-      Stream<List<AnswerYES_NO>> answerListStream) {
+      Stream<List<Answer>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));
   }
 
-  static PollSummaryYES_NO generateSummary(List<AnswerYES_NO> answerList) {
+  static PollSummaryYES_NO generateSummary(List<Answer> answerList) {
     int yesCount = 0;
     int noCount = 0;
     int pendingCount = 0;
+    int totalCount = 0;
     for (AnswerYES_NO i in answerList) {
+      totalCount++;
       if (i.pending) {
         pendingCount++;
       } else {
@@ -78,6 +82,6 @@ class AnswerYES_NO extends Answer {
       }
     }
     return PollSummaryYES_NO(
-        yesCount: yesCount, noCount: noCount, pendingCount: pendingCount);
+        yesCount: yesCount, noCount: noCount, pendingCount: pendingCount, totalCount: totalCount);
   }
 }

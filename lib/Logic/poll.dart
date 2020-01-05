@@ -7,6 +7,7 @@ import 'package:blueberrypoll/Logic/yes_no_answer.dart';
 import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
 import 'package:firebase/firebase.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/streams.dart';
 
 class PollSnapshot {
   String id;
@@ -55,7 +56,7 @@ class PollSnapshot {
       Poll.ANSWER_TYPE_KEY: this.answerType.toString(),
       Poll.ANSWERS_KEY: this.answerListToMap(this.answers),
       Poll.ARE_RESULTS_VISIBLE_KEY: this.areResultsVisible,
-      Poll.IS_ACTIVE_KEY: this.isActive
+      // Poll.IS_ACTIVE_KEY: this.isActive
     };
   }
 }
@@ -83,7 +84,11 @@ class Poll {
   Stream<dynamic> isActive;
 
   Poll({@required this.id, @required this.database}) {
-    this.allInfoStream = this
+    this.isActive = database.getActivePollId().map((data){return (data == this.id);});
+    print("is active initialized");
+
+
+    Stream<PollSnapshot> tempAllInfoStream = this
         .database
         .entryPoint
         .child(DatabaseInterface.POLLS_NODE + "/" + this.id)
@@ -100,8 +105,14 @@ class Poll {
           answers:
               Poll.answerMapListToAnswerObjectList(pollMap[Poll.ANSWERS_KEY]),
           areResultsVisible: pollMap[Poll.ARE_RESULTS_VISIBLE_KEY],
-          isActive: pollMap[Poll.IS_ACTIVE_KEY]);
+          isActive: null);
     });
+
+    this.allInfoStream = CombineLatestStream.combine2(tempAllInfoStream, this.isActive, (PollSnapshot snapshot, isActive){
+      snapshot.isActive = isActive;
+      return snapshot;
+    });
+
     print("all info stream initialized");
 
     this.answers = fetchStreamFeild(Poll.ANSWERS_KEY).map((data) {
@@ -114,11 +125,7 @@ class Poll {
       return data.snapshot.val() as bool;
     });
     print("result visibilty stream initialized");
-    this.isActive = fetchStreamFeild(Poll.IS_ACTIVE_KEY).map((QueryEvent data) {
-      return data.snapshot.val() as bool;
-    });
-    ;
-    print("is active initialized");
+    
   }
 
   Stream<QueryEvent> fetchStreamFeild(String feild) {
@@ -151,31 +158,104 @@ class Poll {
   static List<Answer> answerMapListToAnswerObjectList(List list) {
     List<Answer> temp = new List();
     for (Map i in list) {
-      String answerType = i[Answer.ANSWER_TYPE_FEILD];
-      Answer newAnswer;
-      if (answerType == AnswerType.YES_NO_NOOPINION.toString()) {
-        newAnswer = AnswerYES_NO_NOOPINION.fromMap(i);
-      } else if (answerType == AnswerType.YES_NO.toString()) {
-        newAnswer = AnswerYES_NO.fromMap(i);
-      } else if (answerType == AnswerType.STAR_RATING.toString()) {
-        newAnswer = AnswerSTAR_RATING.fromMap(i);
-      } else if (answerType == AnswerType.TEXT_FEILD.toString()) {
-        newAnswer = AnswerTEXT_FEILD.fromMap(i);
-      }
-      temp.add(newAnswer);
+      temp.add(answerFromMap(i));
     }
     return temp;
+  }
+
+  static Answer answerFromMap(Map i) {
+    String answerType = i[Answer.ANSWER_TYPE_FEILD];
+    if (answerType == AnswerType.YES_NO_NOOPINION.toString()) {
+      return AnswerYES_NO_NOOPINION.fromMap(i);
+    } else if (answerType == AnswerType.YES_NO.toString()) {
+      return AnswerYES_NO.fromMap(i);
+    } else if (answerType == AnswerType.STAR_RATING.toString()) {
+      return AnswerSTAR_RATING.fromMap(i);
+    } else if (answerType == AnswerType.TEXT_FEILD.toString()) {
+      return AnswerTEXT_FEILD.fromMap(i);
+    }
   }
 
   static AnswerType answerTypeFromString(String str) {
     return AnswerType.values.firstWhere((e) => e.toString() == str);
   }
 
-  Stream<PollSummary> getSummaryStream(User user){
-    
-  } // stream is hooked up to areResults visible stream, and will push new object if it changes
-  // Stream<bool> getAnswerOfUser(User user) // returns null if no answer
-  // bool isCreator(User user)
-  // Future<void> setResultVisibility(bool visibility)
+  Stream<PollSummary> getSummaryStream(String userId) {
+    if (this.answerType == AnswerType.YES_NO_NOOPINION) {
+      return configureSummaryStream(
+          userId, AnswerYES_NO_NOOPINION.generateSummaryStream(answers));
+    } else if (this.answerType == AnswerType.YES_NO) {
+      return configureSummaryStream(
+          userId, AnswerYES_NO.generateSummaryStream(answers));
+    } else if (this.answerType == AnswerType.STAR_RATING) {
+      return configureSummaryStream(
+          userId, AnswerSTAR_RATING.generateSummaryStream(answers));
+    } else if (this.answerType == AnswerType.TEXT_FEILD) {
+      print("text feild type");
+      return configureSummaryStream(
+          userId, AnswerTEXT_FEILD.generateSummaryStream(answers));
+    }
+  }
+
+  Stream<PollSummary> configureSummaryStream(
+      String userId, Stream<PollSummary> stream) {
+    Function configureSummaryPermissions = (PollSummary summary) {
+      if (this.creatorId == userId) {
+        summary.hasResultVisibilityPrivilege = true;
+      } else {
+        summary.hasResultVisibilityPrivilege = false;
+      }
+      summary.isAnonymous = this.isAnonymous;
+      summary.parentPoll = this;
+      return summary;
+    };
+
+    return CombineLatestStream.combine2(
+        stream.map(configureSummaryPermissions), this.areResultsVisible,
+        (pollSummary, areResultsVisible) {
+      pollSummary.areResultsVisible = areResultsVisible;
+      return pollSummary;
+    });
+  }
+
+  Stream<Answer> getAnswerOfUser(String userId) {
+    return (this
+            .database
+            .entryPoint
+            .child(DatabaseInterface.POLLS_NODE +
+                "/" +
+                id +
+                "/" +
+                Poll.ANSWERS_KEY)
+            .orderByChild(Answer.RESPONDANT_ID_FEILD)
+            .equalTo(userId)
+            .onChildAdded)
+        .map((QueryEvent query) {
+      if (query.snapshot.hasChildren()) {
+        // print(query.snapshot.val());
+        
+        return answerFromMap(query.snapshot.val());
+      }
+      return null;
+    });
+  }
+
+  bool isCreator(String userId) {
+    return userId == this.creatorId;
+  }
+
+  Future<void> setResultVisibility(bool visibility) async {
+    await database.entryPoint
+        .child(DatabaseInterface.POLLS_NODE +
+            "/" +
+            id +
+            "/" +
+            Poll.ARE_RESULTS_VISIBLE_KEY)
+        .set(visibility);
+  }
+
+  Future<void> setAsActive(){
+    database.setActivePollId(this.id);
+  }
 
 }

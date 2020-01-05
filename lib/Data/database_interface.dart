@@ -6,6 +6,8 @@ import 'package:meta/meta.dart';
 class DatabaseInterface {
   static const String USERS_NODE = "users";
   static const String POLLS_NODE = "polls";
+  static const String ACTIVE_POLL_NODE = "active poll";
+  static const String NO_ACTIVE_POLL_CODE = "none";
   String rootNode;
   String organization;
   DatabaseReference entryPoint;
@@ -78,4 +80,24 @@ class DatabaseInterface {
     await poll.initializeConstantData();
     return poll;
   }
+
+  Stream getActivePollId() {
+    return this
+        .entryPoint
+        .child(DatabaseInterface.ACTIVE_POLL_NODE)
+        .onValue
+        .map((data) {
+      return data.snapshot.val();
+    }).distinct();
+  }
+
+  Future<void> setActivePollId(String pollId) async {
+    await this.entryPoint.child(DatabaseInterface.ACTIVE_POLL_NODE).set(pollId);
+  }
+
+   Future<void> endCurrentPoll() async {
+    await this.entryPoint.child(DatabaseInterface.ACTIVE_POLL_NODE).set(DatabaseInterface.NO_ACTIVE_POLL_CODE);
+  }
+
+
 }

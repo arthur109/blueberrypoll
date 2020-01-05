@@ -14,7 +14,7 @@ class Answer {
   static const String TIMESTAMP_FEILD = "timestamp";
   static const String ANSWER_FEILD = "answer";
   static const String ANSWER_TYPE_FEILD = "answer type";
-  
+
   bool pending;
   String respondantId;
   int timestamp;
@@ -47,9 +47,11 @@ class PollSummary {
   bool areResultsVisible;
   bool hasResultVisibilityPrivilege;
   int pendingCount;
+  int totalCount;
 
   PollSummary({
     @required this.pendingCount,
+    @required this.totalCount,
   });
 
 

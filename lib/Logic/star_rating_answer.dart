@@ -19,8 +19,10 @@ class PollSummarySTAR_RATING extends PollSummary {
     @required this.fourCount,
     @required this.fiveCount,
     @required int pendingCount,
+    @required int totalCount,
   }) : super(
           pendingCount: pendingCount,
+          totalCount: totalCount
         );
 }
 
@@ -37,8 +39,8 @@ class AnswerSTAR_RATING extends Answer {
           pending: pending,
         );
 
-  static Stream<PollSummarySTAR_RATING> generateSummaryStream(
-      Stream<List<AnswerSTAR_RATING>> answerListStream) {
+  static Stream<PollSummary> generateSummaryStream(
+      Stream<List<Answer>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));
   }
 
@@ -68,15 +70,17 @@ class AnswerSTAR_RATING extends Answer {
     };
   }
 
-  static PollSummarySTAR_RATING generateSummary(
-      List<AnswerSTAR_RATING> answerList) {
+  static PollSummary generateSummary(
+      List<Answer> answerList) {
     int oneCount = 0;
     int twoCount = 0;
     int threeCount = 0;
     int fourCount = 0;
     int fiveCount = 0;
     int pendingCount = 0;
+    int totalCount = 0;
     for (AnswerSTAR_RATING i in answerList) {
+      totalCount ++;
       if (i.pending) {
         pendingCount++;
       } else {
@@ -99,6 +103,7 @@ class AnswerSTAR_RATING extends Answer {
         threeCount: threeCount,
         fourCount: fourCount,
         fiveCount: fiveCount,
-        pendingCount: pendingCount);
+        pendingCount: pendingCount,
+        totalCount: totalCount);
   }
 }

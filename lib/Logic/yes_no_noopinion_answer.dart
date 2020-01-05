@@ -15,8 +15,10 @@ class PollSummaryYES_NO_NOOPINION extends PollSummary {
     @required this.noCount,
     @required this.noOpinionCount,
     @required int pendingCount,
+    @required int totalCount,
   }) : super(
           pendingCount: pendingCount,
+          totalCount: totalCount,
         );
 }
 
@@ -58,17 +60,19 @@ class AnswerYES_NO_NOOPINION extends Answer {
     };
   }
   
-  static Stream<PollSummaryYES_NO_NOOPINION> generateSummaryStream(
-      Stream<List<AnswerYES_NO_NOOPINION>> answerListStream) {
+  static Stream<PollSummary> generateSummaryStream(
+      Stream<List<Answer>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));
   }
 
-  static PollSummaryYES_NO_NOOPINION generateSummary(List<AnswerYES_NO_NOOPINION> answerList) {
+  static PollSummary generateSummary(List<Answer> answerList) {
     int yesCount = 0;
     int noCount = 0;
     int noOpinionCount = 0;
     int pendingCount = 0;
+    int totalCount = 0;
     for (AnswerYES_NO_NOOPINION i in answerList) {
+      totalCount++;
       if (i.pending) {
         pendingCount++;
       } else {
@@ -83,6 +87,6 @@ class AnswerYES_NO_NOOPINION extends Answer {
       }
     }
     return PollSummaryYES_NO_NOOPINION(
-        yesCount: yesCount, noCount: noCount, noOpinionCount: noOpinionCount, pendingCount: pendingCount);
+        yesCount: yesCount, noCount: noCount, noOpinionCount: noOpinionCount, pendingCount: pendingCount, totalCount: totalCount);
   }
 }

@@ -10,8 +10,10 @@ class PollSummaryTEXT_FEILD extends PollSummary {
   PollSummaryTEXT_FEILD({
     @required this.answeredCount,
     @required int pendingCount,
+    @required int totalCount,
   }) : super(
           pendingCount: pendingCount,
+          totalCount: totalCount,
         );
 }
 
@@ -48,15 +50,17 @@ class AnswerTEXT_FEILD extends Answer {
     };
   }
   
-  static Stream<PollSummaryTEXT_FEILD> generateSummaryStream(
-      Stream<List<AnswerTEXT_FEILD>> answerListStream) {
+  static Stream<PollSummary> generateSummaryStream(
+      Stream<List<Answer>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));
   }
 
-  static PollSummaryTEXT_FEILD generateSummary(List<AnswerTEXT_FEILD> answerList) {
+  static PollSummaryTEXT_FEILD generateSummary(List<Answer> answerList) {
     int answeredCount = 0;
     int pendingCount = 0;
+    int totalCount = 0;
     for (AnswerTEXT_FEILD i in answerList) {
+      totalCount++;
       if (i.pending) {
         pendingCount++;
       } else {
@@ -64,6 +68,6 @@ class AnswerTEXT_FEILD extends Answer {
       }
     }
     return PollSummaryTEXT_FEILD(
-         answeredCount: answeredCount, pendingCount: pendingCount);
+         answeredCount: answeredCount, pendingCount: pendingCount, totalCount: totalCount);
   }
 }
