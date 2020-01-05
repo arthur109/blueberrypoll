@@ -9,21 +9,36 @@ import 'package:meta/meta.dart';
 enum AnswerType { YES_NO, YES_NO_NOOPINION, TEXT_FEILD, STAR_RATING }
 
 class Answer {
-  static Map answerTypeClassMap = {
-    AnswerType.YES_NO: AnswerYES_NO,
-    AnswerType.YES_NO_NOOPINION: AnswerYES_NO_NOOPINION,
-    AnswerType.TEXT_FEILD: AnswerTEXT_FEILD,
-    AnswerType.STAR_RATING: AnswerSTAR_RATING
-  };
+  static const String PENDING_FEILD = "is pending";
+  static const String RESPONDANT_ID_FEILD = "respondant id";
+  static const String TIMESTAMP_FEILD = "timestamp";
+  static const String ANSWER_FEILD = "answer";
+  static const String ANSWER_TYPE_FEILD = "answer type";
+  
   bool pending;
-  UserP respondant;
+  String respondantId;
   int timestamp;
 
   Answer({
-    @required this.respondant,
-    @required this.timestamp,
+    @required this.respondantId,
+    this.timestamp,
     @required this.pending,
-  });
+  }){
+  if(this.timestamp == null){
+      this.timestamp = DateTime.now().millisecondsSinceEpoch;
+    }
+  }
+
+
+
+  Map<String,dynamic> toMap(){
+    return {
+      Answer.PENDING_FEILD : this.pending,
+      Answer.RESPONDANT_ID_FEILD : this.respondantId,
+      Answer.TIMESTAMP_FEILD : timestamp,
+      Answer.ANSWER_FEILD : null
+    };
+  }
 }
 
 class PollSummary {
@@ -36,6 +51,7 @@ class PollSummary {
   PollSummary({
     @required this.pendingCount,
   });
+
 
   // void setAnonymity(bool anonymity)
   // void setVisibility(bool visibility)

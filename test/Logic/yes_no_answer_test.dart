@@ -15,32 +15,32 @@ void main() {
     respondant = UserP("my id");
     answerListOne = [
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: false),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.YES,
           timestamp: 1,
           pending: false),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.YES,
           timestamp: 1,
           pending: false),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: true),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: true),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: true),
@@ -48,27 +48,27 @@ void main() {
 
     answerListTwo = [
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.YES,
           timestamp: 1,
           pending: false),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: false),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: false),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: true),
       AnswerYES_NO(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO.NO,
           timestamp: 1,
           pending: true),

@@ -15,29 +15,29 @@ void main() {
     respondant = UserP("my id");
     answerListOne = [
       AnswerTEXT_FEILD(
-          respondant: respondant, answer: "yo", timestamp: 1, pending: false),
+          respondantId: "yo", answer: "yo", timestamp: 1, pending: false),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "yofrf",
           timestamp: 1,
           pending: false),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "diginign",
           timestamp: 1,
           pending: false),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "jkdhkjfhksd",
           timestamp: 1,
           pending: true),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "jkdhfkjdfhkdjhf",
           timestamp: 1,
           pending: true),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "kdfjklsdfhkjdfh",
           timestamp: 1,
           pending: true),
@@ -45,27 +45,27 @@ void main() {
 
     answerListTwo = [
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "djkfhkjdhfjkds",
           timestamp: 1,
           pending: false),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "lkdfhkjdfhkdf",
           timestamp: 1,
           pending: false),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "kjdhfkjdsfhkjfdshf",
           timestamp: 1,
           pending: false),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "dkjhfkjdfhkjdshf",
           timestamp: 1,
           pending: true),
       AnswerTEXT_FEILD(
-          respondant: respondant,
+          respondantId: "yo",
           answer: "kjdfhkjdfhkjdsfh",
           timestamp: 1,
           pending: true),

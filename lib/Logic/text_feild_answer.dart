@@ -18,16 +18,36 @@ class PollSummaryTEXT_FEILD extends PollSummary {
 class AnswerTEXT_FEILD extends Answer {
   String answer;
   AnswerTEXT_FEILD({
-    @required UserP respondant,
-    @required int timestamp,
+    @required String respondantId,
+    int timestamp,
     @required bool pending,
     @required this.answer,
   }) : super(
-          respondant: respondant,
+          respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
         );
+  static AnswerTEXT_FEILD fromMap(Map map) {
+    return AnswerTEXT_FEILD(
+      respondantId: map[Answer.RESPONDANT_ID_FEILD],
+      pending: map[Answer.PENDING_FEILD],
+      timestamp: map[Answer.TIMESTAMP_FEILD],
+      answer: map[Answer.ANSWER_FEILD]
+    );
+  }
 
+
+  @override
+  Map<String,dynamic> toMap(){
+    return {
+      Answer.PENDING_FEILD : this.pending,
+      Answer.RESPONDANT_ID_FEILD : this.respondantId,
+      Answer.TIMESTAMP_FEILD : timestamp,
+      Answer.ANSWER_FEILD : answer.toString(),
+      Answer.ANSWER_TYPE_FEILD: AnswerType.TEXT_FEILD.toString()
+    };
+  }
+  
   static Stream<PollSummaryTEXT_FEILD> generateSummaryStream(
       Stream<List<AnswerTEXT_FEILD>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));

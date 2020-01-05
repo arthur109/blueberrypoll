@@ -13,14 +13,14 @@ class UserSnapshot {
   });
 
   Map toMap() {
-    return {UserP.NAME_FEILD: this.name, UserP.ONLINE_FEILD: this.isOnline};
+    return {UserP.NAME_KEY: this.name, UserP.ONLINE_KEY: this.isOnline};
   }
   // Map fromMap()
 }
 
 class UserP {
-  static const NAME_FEILD = "name";
-  static const ONLINE_FEILD = "isOnline";
+  static const NAME_KEY = "name";
+  static const ONLINE_KEY = "isOnline";
   DatabaseInterface database;
   Stream<UserSnapshot> allInfoStream;
   Stream<String> name;
@@ -36,8 +36,8 @@ class UserP {
       Map userMap = data.snapshot.val();
       return UserSnapshot(
           id: this.id,
-          name: userMap[UserP.NAME_FEILD],
-          isOnline: userMap[UserP.ONLINE_FEILD]);
+          name: userMap[UserP.NAME_KEY],
+          isOnline: userMap[UserP.ONLINE_KEY]);
     });
 
     this.name = this
@@ -47,7 +47,7 @@ class UserP {
             "/" +
             this.id +
             "/" +
-            UserP.NAME_FEILD)
+            UserP.NAME_KEY)
         .onValue
         .map((QueryEvent data) {
       return data.snapshot.val();
@@ -60,7 +60,7 @@ class UserP {
             "/" +
             this.id +
             "/" +
-            UserP.ONLINE_FEILD)
+            UserP.ONLINE_KEY)
         .onValue
         .map((QueryEvent data) {
       return data.snapshot.val();

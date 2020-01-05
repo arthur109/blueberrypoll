@@ -1,56 +1,50 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import 'package:blueberrypoll/Logic/answer.dart';
 import 'package:blueberrypoll/Logic/star_rating_answer.dart';
-import 'package:blueberrypoll/Logic/answer.dart';
-import 'package:blueberrypoll/Logic/poll.dart';
-import 'package:blueberrypoll/Logic/user.dart';
 import 'package:test/test.dart';
 
 void main() {
   List<AnswerSTAR_RATING> answerListOne;
   List<AnswerSTAR_RATING> answerListTwo;
-  UserP respondant;
-  setUp(() {
-    respondant = UserP("my id");
+  setUp((){
     answerListOne = [
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.ONE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.TWO,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.THREE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.FOUR,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.FIVE,
           timestamp: 1,
           pending: true),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.ONE,
           timestamp: 1,
           pending: true),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.TWO,
           timestamp: 1,
           pending: true),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.THREE,
           timestamp: 1,
           pending: true),
@@ -58,37 +52,37 @@ void main() {
 
     answerListTwo = [
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.ONE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.ONE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.FIVE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.THREE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.THREE,
           timestamp: 1,
           pending: false),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.THREE,
           timestamp: 1,
           pending: true),
       AnswerSTAR_RATING(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumSTAR_RATING.THREE,
           timestamp: 1,
           pending: true),

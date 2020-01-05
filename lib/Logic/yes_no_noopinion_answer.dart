@@ -23,16 +23,41 @@ class PollSummaryYES_NO_NOOPINION extends PollSummary {
 class AnswerYES_NO_NOOPINION extends Answer {
   AnswerEnumYES_NO_NOOPINION answer;
   AnswerYES_NO_NOOPINION({
-    @required UserP respondant,
-    @required int timestamp,
+    @required String respondantId,
+    int timestamp,
     @required bool pending,
     @required this.answer,
   }) : super(
-          respondant: respondant,
+          respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
         );
 
+  static AnswerYES_NO_NOOPINION fromMap(Map map) {
+    return AnswerYES_NO_NOOPINION(
+      respondantId: map[Answer.RESPONDANT_ID_FEILD],
+      pending: map[Answer.PENDING_FEILD],
+      timestamp: map[Answer.TIMESTAMP_FEILD],
+      answer: answerEnumFromString(map[Answer.ANSWER_FEILD])
+    );
+  }
+
+  static AnswerEnumYES_NO_NOOPINION answerEnumFromString(String str){
+    return AnswerEnumYES_NO_NOOPINION.values.firstWhere((e) => e.toString() == str);
+  }
+
+
+  @override
+  Map<String,dynamic> toMap(){
+    return {
+      Answer.PENDING_FEILD : this.pending,
+      Answer.RESPONDANT_ID_FEILD : this.respondantId,
+      Answer.TIMESTAMP_FEILD : timestamp,
+      Answer.ANSWER_FEILD : answer.toString(),
+      Answer.ANSWER_TYPE_FEILD: AnswerType.YES_NO_NOOPINION.toString()
+    };
+  }
+  
   static Stream<PollSummaryYES_NO_NOOPINION> generateSummaryStream(
       Stream<List<AnswerYES_NO_NOOPINION>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));

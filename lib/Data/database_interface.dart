@@ -1,9 +1,11 @@
+import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:firebase/firebase.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:meta/meta.dart';
 
 class DatabaseInterface {
   static const String USERS_NODE = "users";
+  static const String POLLS_NODE = "polls";
   String rootNode;
   String organization;
   DatabaseReference entryPoint;
@@ -24,15 +26,12 @@ class DatabaseInterface {
     entryPoint = server.ref(rootNode);
   }
 
-  
-
-
   Future<UserP> signIn(UserSnapshot credentials) async {
     print("--SIGN IN--");
     Map userFound = (await this
             .entryPoint
             .child(DatabaseInterface.USERS_NODE)
-            .orderByChild(UserP.NAME_FEILD)
+            .orderByChild(UserP.NAME_KEY)
             .equalTo(credentials.name)
             .once("value"))
         .snapshot
@@ -59,12 +58,24 @@ class DatabaseInterface {
   }
 
   void setOnlineStatusHooks(UserP user) {
-    DatabaseReference ref = this.entryPoint.child(DatabaseInterface.USERS_NODE +
-        "/" +
-        user.id +
-        "/" +
-        UserP.ONLINE_FEILD);
+    DatabaseReference ref = this.entryPoint.child(
+        DatabaseInterface.USERS_NODE + "/" + user.id + "/" + UserP.ONLINE_KEY);
     ref.set(true);
     ref.onDisconnect().set(false);
+  }
+
+  Future<Poll> createPoll(PollSnapshot pollInfo) async {
+    print("-- CREATE POLL --");
+    String newPollID =
+        this.entryPoint.child(DatabaseInterface.POLLS_NODE).push().key;
+    print("id found: " + newPollID);
+    await this
+        .entryPoint
+        .child(DatabaseInterface.POLLS_NODE + "/" + newPollID)
+        .set(pollInfo.toMap());
+
+    Poll poll = Poll(id: newPollID, database: this);
+    await poll.initializeConstantData();
+    return poll;
   }
 }

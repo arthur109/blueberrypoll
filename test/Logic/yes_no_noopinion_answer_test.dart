@@ -15,42 +15,42 @@ void main() {
     respondant = UserP("my id");
     answerListOne = [
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.YES,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.YES,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NOOPINION,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NOOPINION,
           timestamp: 1,
           pending: true),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: true),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: true),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: true),
@@ -58,37 +58,37 @@ void main() {
 
     answerListTwo = [
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.YES,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NOOPINION,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NOOPINION,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: false),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: true),
       AnswerYES_NO_NOOPINION(
-          respondant: respondant,
+          respondantId: "yo",
           answer: AnswerEnumYES_NO_NOOPINION.NO,
           timestamp: 1,
           pending: true),

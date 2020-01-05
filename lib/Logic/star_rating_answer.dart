@@ -27,12 +27,12 @@ class PollSummarySTAR_RATING extends PollSummary {
 class AnswerSTAR_RATING extends Answer {
   AnswerEnumSTAR_RATING answer;
   AnswerSTAR_RATING({
-    @required UserP respondant,
-    @required int timestamp,
+    @required String respondantId,
+    int timestamp,
     @required bool pending,
     @required this.answer,
   }) : super(
-          respondant: respondant,
+          respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
         );
@@ -42,13 +42,39 @@ class AnswerSTAR_RATING extends Answer {
     return answerListStream.map((map) => generateSummary(map));
   }
 
+  static AnswerSTAR_RATING fromMap(Map map) {
+    return AnswerSTAR_RATING(
+      respondantId: map[Answer.RESPONDANT_ID_FEILD],
+      pending: map[Answer.PENDING_FEILD],
+      timestamp: map[Answer.TIMESTAMP_FEILD],
+      answer: answerEnumFromString(map[Answer.ANSWER_FEILD])
+    );
+  }
+
+  static AnswerEnumSTAR_RATING answerEnumFromString(String str){
+    return AnswerEnumSTAR_RATING.values.firstWhere((e) => e.toString() == str);
+  }
+
+
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      Answer.PENDING_FEILD: this.pending,
+      Answer.RESPONDANT_ID_FEILD: this.respondantId,
+      Answer.TIMESTAMP_FEILD: timestamp,
+      Answer.ANSWER_FEILD: answer.toString(),
+      Answer.ANSWER_TYPE_FEILD: AnswerType.STAR_RATING.toString()
+    };
+  }
+
   static PollSummarySTAR_RATING generateSummary(
       List<AnswerSTAR_RATING> answerList) {
-   int oneCount = 0;
-  int twoCount = 0;
-  int threeCount = 0;
-  int fourCount = 0;
-  int fiveCount = 0;
+    int oneCount = 0;
+    int twoCount = 0;
+    int threeCount = 0;
+    int fourCount = 0;
+    int fiveCount = 0;
     int pendingCount = 0;
     for (AnswerSTAR_RATING i in answerList) {
       if (i.pending) {
@@ -56,18 +82,23 @@ class AnswerSTAR_RATING extends Answer {
       } else {
         if (i.answer == AnswerEnumSTAR_RATING.ONE) {
           oneCount++;
-        } else if (i.answer == AnswerEnumSTAR_RATING.TWO)  {
+        } else if (i.answer == AnswerEnumSTAR_RATING.TWO) {
           twoCount++;
-        }else if (i.answer == AnswerEnumSTAR_RATING.THREE)  {
+        } else if (i.answer == AnswerEnumSTAR_RATING.THREE) {
           threeCount++;
-        }else if (i.answer == AnswerEnumSTAR_RATING.FOUR)  {
+        } else if (i.answer == AnswerEnumSTAR_RATING.FOUR) {
           fourCount++;
-        }else if (i.answer == AnswerEnumSTAR_RATING.FIVE)  {
+        } else if (i.answer == AnswerEnumSTAR_RATING.FIVE) {
           fiveCount++;
         }
       }
     }
     return PollSummarySTAR_RATING(
-        oneCount: oneCount, twoCount: twoCount, threeCount: threeCount, fourCount: fourCount, fiveCount: fiveCount, pendingCount: pendingCount);
+        oneCount: oneCount,
+        twoCount: twoCount,
+        threeCount: threeCount,
+        fourCount: fourCount,
+        fiveCount: fiveCount,
+        pendingCount: pendingCount);
   }
 }
