@@ -6,6 +6,7 @@ import 'package:blueberrypoll/Logic/text_feild_answer.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/Logic/yes_no_answer.dart';
 import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
+import 'package:blueberrypoll/UI/login.dart';
 import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 
@@ -109,8 +110,6 @@ void main() async {
       primaryColor: Colors.black,
       accentColor: Colors.orangeAccent,
     ),
-    home: Scaffold(
-      body: Text("hello"),
-    ),
+    home: LoginPage()
   ));
 }
