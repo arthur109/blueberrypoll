@@ -110,6 +110,6 @@ void main() async {
       primaryColor: Colors.black,
       accentColor: Colors.orangeAccent,
     ),
-    home: LoginPage()
+    home: LoginPage(database)
   ));
 }

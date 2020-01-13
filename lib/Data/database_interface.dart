@@ -95,9 +95,31 @@ class DatabaseInterface {
     await this.entryPoint.child(DatabaseInterface.ACTIVE_POLL_NODE).set(pollId);
   }
 
-   Future<void> endCurrentPoll() async {
-    await this.entryPoint.child(DatabaseInterface.ACTIVE_POLL_NODE).set(DatabaseInterface.NO_ACTIVE_POLL_CODE);
+  Future<void> endCurrentPoll() async {
+    await this
+        .entryPoint
+        .child(DatabaseInterface.ACTIVE_POLL_NODE)
+        .set(DatabaseInterface.NO_ACTIVE_POLL_CODE);
   }
 
+  Stream allUsersStream() {
+    return this
+        .entryPoint
+        .child(DatabaseInterface.USERS_NODE)
+        .onValue
+        .map((QueryEvent data) {
+      if (data.snapshot.exists()) {
+        List<UserSnapshot> users = List();
+        for (Map i in (data.snapshot.val() as Map).values) {
+          print(i);
+          users.add(UserSnapshot(
+              name: i[UserP.NAME_KEY], isOnline: i[UserP.ONLINE_KEY]));
+        }
 
+        return users;
+      }
+
+      return null;
+    });
+  }
 }

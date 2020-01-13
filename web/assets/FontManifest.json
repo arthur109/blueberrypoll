@@ -14,5 +14,13 @@
                 "asset": "fonts/Montserrat_Alternates/MontserratAlternates-Regular.ttf"
             }
         ]
+    },
+    {
+        "fonts": [
+            {
+                "asset": "fonts/MaterialIcons-Regular.ttf"
+            }
+        ],
+        "family": "MaterialIcons"
     }
 ]
