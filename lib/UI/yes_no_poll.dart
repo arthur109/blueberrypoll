@@ -53,27 +53,56 @@ class _YesNoPollState extends State<YesNoPoll> {
     return StreamBuilder(
       stream: this.widget.poll.getAnswerOfUser(this.widget.user.id),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
+        print("--- UPDATED");
         if (snapshot.hasData) {
+          print("snapshot has data");
           if (snapshot.data == Poll.NO_ANSWER_CODE) {
+            print("no user answers found");
             setPendingAnswer();
+            return UIGenerator.loading(message: "getting answer b");
           } else if ((snapshot.data as Answer).pending) {
+            print("pending answer found");
             return getAnswerWidget();
           } else {
+            print("completed answer found");
             return pollSummary();
           }
         }
+        print("snapshot has no data");
         this.widget.poll.areTheirAnswers().then((value){
           if(!value){
+            print("no answers at all, setting pending answer");
             setPendingAnswer();
           }
         });
-        return UIGenerator.loading(message: "getting answer");
+        return UIGenerator.loading(message: "getting answer a");
       },
     );
   }
 
   Widget getAnswerWidget() {
-    return Center(child: Text("get Answer"));
+     return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+       crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              UIGenerator.subtitle(
+                  "Currently polling"),
+              SizedBox(
+                height: 20,
+              ),
+              UIGenerator.heading(this.widget.poll.question)
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget pollSummary() {
@@ -86,9 +115,25 @@ class _YesNoPollState extends State<YesNoPoll> {
         pending: true,
         answer: AnswerEnumYES_NO.YES,
         respondantId: this.widget.user.id));
+    setState(() {
+
+    });
   }
 
   Widget inActivePoll() {
     return pollSummary();
+  }
+
+  @override
+  void initState() { 
+    super.initState();
+    this.widget.poll.answers.listen((data){
+      print("answers updated ------");
+    });
+
+    this.widget.poll.getAnswerOfUser(this.widget.user.id).listen((data){
+      print("user answers updated ------ ");
+      print(data.toString());
+    });
   }
 }
