@@ -107,9 +107,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget loadingPage() {
     return Material(
-      child: Center(
-        child: CupertinoActivityIndicator(),
-      ),
+      child: UIGenerator.loading(message: "loging you in")
+  
     );
   }
 

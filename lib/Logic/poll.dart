@@ -71,6 +71,8 @@ class Poll {
   static const String ARE_RESULTS_VISIBLE_KEY = "are results visible";
   static const String IS_ACTIVE_KEY = "is active";
 
+  static const String NO_ANSWER_CODE = "no answer found";
+
   DatabaseInterface database;
   Stream<PollSnapshot> allInfoStream;
   String id;
@@ -155,9 +157,10 @@ class Poll {
         .val();
   }
 
-  static List<Answer> answerMapListToAnswerObjectList(List list) {
+  static List<Answer> answerMapListToAnswerObjectList(Map answers) {
     List<Answer> temp = new List();
-    for (Map i in list) {
+    for (String key in answers.keys) {
+      Map i = answers[key];
       temp.add(answerFromMap(i));
     }
     return temp;
@@ -218,26 +221,48 @@ class Poll {
     });
   }
 
-  Stream<Answer> getAnswerOfUser(String userId) {
-    return (this
-            .database
-            .entryPoint
-            .child(DatabaseInterface.POLLS_NODE +
-                "/" +
-                id +
-                "/" +
-                Poll.ANSWERS_KEY)
-            .orderByChild(Answer.RESPONDANT_ID_FEILD)
-            .equalTo(userId)
-            .onChildAdded)
-        .map((QueryEvent query) {
-      if (query.snapshot.hasChildren()) {
-        // print(query.snapshot.val());
-        
-        return answerFromMap(query.snapshot.val());
+  Future<bool> areTheirAnswers()async{
+    return (await this.database.entryPoint.child(this.answersPath()).once("value")).snapshot.exists();
       }
-      return null;
+
+  Stream getAnswerOfUser(String userId) {
+    return this.answers.map((List answers){
+      for(Answer i in answers){
+        // print(i.toMap());
+        if(i.respondantId == userId){
+          return i;
+        }
+      }
+      print("did not find matching answer");
+      return Poll.NO_ANSWER_CODE;
     });
+    // return (this
+    //         .database
+    //         .entryPoint
+    //         .child(DatabaseInterface.POLLS_NODE +
+    //             "/" +
+    //             id +
+    //             "/" +
+    //             Poll.ANSWERS_KEY)
+    //         .orderByChild(Answer.RESPONDANT_ID_FEILD)
+    //         .equalTo(userId)
+    //         .onChildAdded)
+    //     .map((QueryEvent query) {
+    //   if (query.snapshot.hasChildren()) {
+    //     // print(query.snapshot.val());
+        
+    //     return answerFromMap(query.snapshot.val());
+    //   }
+    //   return null;
+    // });
+  }
+
+  Future<void> submitAnswer(Answer answer) async {
+    return await this.database.entryPoint.child(answersPath()+"/"+answer.respondantId).set(answer.toMap());
+  }
+
+  String answersPath(){
+    return DatabaseInterface.POLLS_NODE+"/"+this.id+"/"+Poll.ANSWERS_KEY;
   }
 
   bool isCreator(String userId) {

@@ -1,6 +1,7 @@
 import 'package:blueberrypoll/Data/database_interface.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
+import 'package:blueberrypoll/UI/poll_view.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +46,10 @@ class _MainPageState extends State<MainPage> {
 
   Widget getCorrectScreen() {
     return StreamBuilder(
-      stream: this.widget.database.getActivePollId(),
+      stream: this.widget.database.getActivePollId().distinct(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: CupertinoActivityIndicator(),
-          );
+          return UIGenerator.loading();
         } else if ((snapshot.data as String) == "none") {
           if (creatingPoll) {
             return createPollScreen();
@@ -60,7 +59,7 @@ class _MainPageState extends State<MainPage> {
           if (creatingPoll) {
             return cannotCreatePollScreen();
           }
-          return viewPollScreen();
+          return viewPollScreen(snapshot.data);
         }
       },
     );
@@ -144,14 +143,36 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget cannotCreatePollScreen() {
-    return Center(
-      child: Text("cannot create poll"),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+       crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              UIGenerator.subtitle(
+                  "Action invalid"),
+              SizedBox(
+                height: 20,
+              ),
+              UIGenerator.heading("Poll Already in Session")
+            ],
+          ),
+        ),
+        UIGenerator.label("You cannot create a new poll because one is already in session."),
+        SizedBox(height: 45,),
+        UIGenerator.button("Continue", (){setState(() {
+          creatingPoll = false;
+        });})
+      ],
     );
   }
 
-  Widget viewPollScreen() {
-    return Center(
-      child: Text("viewing poll"),
-    );
+  Widget viewPollScreen(String pollId) {
+    return PollView(pollId, this.widget.user, this.widget.database);
   }
 }

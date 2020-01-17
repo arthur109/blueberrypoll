@@ -25,7 +25,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return this.creatingPoll ? loading() : Column(
+    return this.creatingPoll ? UIGenerator.loading(message: "creating poll") : Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,9 +140,6 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
     }
   }
 
-  Widget loading(){
-    return Center(child: CupertinoActivityIndicator(),);
-  }
   Widget radioList(String label, List<Map<String, dynamic>> options,
       dynamic groupValue, Function func) {
     List<Widget> content = [

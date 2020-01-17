@@ -111,7 +111,6 @@ class DatabaseInterface {
       if (data.snapshot.exists()) {
         List<UserSnapshot> users = List();
         for (Map i in (data.snapshot.val() as Map).values) {
-          print(i);
           users.add(UserSnapshot(
               name: i[UserP.NAME_KEY], isOnline: i[UserP.ONLINE_KEY]));
         }

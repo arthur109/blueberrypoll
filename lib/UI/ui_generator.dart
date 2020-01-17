@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UIGenerator {
-
   static Widget logo() {
     return Row(
       children: <Widget>[
@@ -14,7 +14,7 @@ class UIGenerator {
               fontStyle: FontStyle.normal,
               fontFamily: 'MontserratAlternates'),
         ),
-         Text(
+        Text(
           "poll",
           style: TextStyle(
               color: Colors.black,
@@ -49,12 +49,11 @@ class UIGenerator {
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
-
-    
   }
-  
-  static Widget fadedNormalText(String text){
-      return Text(text,
+
+  static Widget fadedNormalText(String text) {
+    return Text(
+      text,
       style: TextStyle(
           color: Colors.black54,
           // fontWeight: FontWeight.w900,
@@ -64,8 +63,9 @@ class UIGenerator {
     );
   }
 
-  static Widget coloredText(String text, Color color){
-      return Text(text,
+  static Widget coloredText(String text, Color color) {
+    return Text(
+      text,
       style: TextStyle(
           color: color,
           fontWeight: FontWeight.bold,
@@ -109,17 +109,44 @@ class UIGenerator {
     );
   }
 
+  static Widget loading({String message}) {
+    if (message != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CupertinoActivityIndicator(),
+            SizedBox(
+              height: 12,
+            ),
+            Text(
+              message,
+              style: TextStyle(
+                  color: Color.fromRGBO(91, 91, 111, 0.6),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  letterSpacing: 2,
+                  fontStyle: FontStyle.normal,
+                  fontFamily: 'Muli'),
+            ),
+          ],
+        ),
+      );
+    }
+    return Center(
+      child: CupertinoActivityIndicator(),
+    );
+  }
 
   static Widget button(String text, Function func) {
     return InkWell(
-      onTap: func,
-          child: Container(
-        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(250, 160, 138, 1),
-          borderRadius: BorderRadius.all(Radius.circular(6))
-        ),
-        child: coloredText(text, Colors.white),
-    ));
+        onTap: func,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(250, 160, 138, 1),
+              borderRadius: BorderRadius.all(Radius.circular(6))),
+          child: coloredText(text, Colors.white),
+        ));
   }
 }

@@ -28,7 +28,7 @@ class _ParticipantsViewState extends State<ParticipantsView> {
       builder: (BuildContext context, AsyncSnapshot snapshot){
         List<UserSnapshot> users = snapshot.data;
         if(users == null){
-          return Center(child: CupertinoActivityIndicator(),);
+          return UIGenerator.loading(message: "fetching participants");
         }
         List<UserSnapshot> onlineUsers = List();
         for(UserSnapshot i in users){
