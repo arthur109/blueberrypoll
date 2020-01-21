@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
         child: Row(
       children: <Widget>[
         Expanded(child: leftColumn()),
-        SizedBox(width: 500, child: rightColumn())
+        SizedBox(width: 400, child: rightColumn())
       ],
     ));
   }

@@ -21,6 +21,9 @@ class YesNoPoll extends StatefulWidget {
 }
 
 class _YesNoPollState extends State<YesNoPoll> {
+  Stream userAnswerStream;
+  PollSummaryYES_NO summary;
+
   @override
   Widget build(BuildContext context) {
     return this.widget.poll.isCreator(this.widget.user.id)
@@ -51,7 +54,7 @@ class _YesNoPollState extends State<YesNoPoll> {
 
   Widget activePoll() {
     return StreamBuilder(
-      stream: this.widget.poll.getAnswerOfUser(this.widget.user.id),
+      stream: this.userAnswerStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         print("--- UPDATED");
         if (snapshot.hasData) {
@@ -69,8 +72,8 @@ class _YesNoPollState extends State<YesNoPoll> {
           }
         }
         print("snapshot has no data");
-        this.widget.poll.areTheirAnswers().then((value){
-          if(!value){
+        this.widget.poll.areTheirAnswers().then((value) {
+          if (!value) {
             print("no answers at all, setting pending answer");
             setPendingAnswer();
           }
@@ -81,10 +84,10 @@ class _YesNoPollState extends State<YesNoPoll> {
   }
 
   Widget getAnswerWidget() {
-     return Column(
+    return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
-       crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: 100),
@@ -92,8 +95,7 @@ class _YesNoPollState extends State<YesNoPoll> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              UIGenerator.subtitle(
-                  "Currently polling"),
+              UIGenerator.subtitle("Currently polling"),
               SizedBox(
                 height: 20,
               ),
@@ -101,12 +103,143 @@ class _YesNoPollState extends State<YesNoPoll> {
             ],
           ),
         ),
+        UIGenerator.label("YOUR ANSWER"),
+        SizedBox(
+          height: 11,
+        ),
+        ClipRRect(
+            borderRadius: new BorderRadius.circular(30.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      this.widget.poll.submitAnswer(AnswerYES_NO(
+                          pending: false,
+                          answer: AnswerEnumYES_NO.YES,
+                          respondantId: this.widget.user.id));
+                    },
+                    hoverColor: Color.fromRGBO(235, 235, 237, 1),
+                    child: Ink(
+                      color: Color.fromARGB(255, 246, 246, 250),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(
+                        child: UIGenerator.coloredText(
+                            "Yes", Color.fromARGB(255, 91, 91, 111)),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 6,
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      this.widget.poll.submitAnswer(AnswerYES_NO(
+                          pending: false,
+                          answer: AnswerEnumYES_NO.NO,
+                          respondantId: this.widget.user.id));
+                    },
+                    hoverColor: Color.fromRGBO(235, 235, 237, 1),
+                    child: Ink(
+                      color: Color.fromARGB(255, 246, 246, 250),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(
+                        child: UIGenerator.coloredText(
+                            "No", Color.fromARGB(255, 91, 91, 111)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ))
       ],
     );
   }
 
   Widget pollSummary() {
-    return Center(child: Text("poll summary"));
+    if (summary != null) {
+      bool canViewResults =
+          (summary.areResultsVisible || summary.hasResultVisibilityPrivilege);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 100),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                UIGenerator.subtitle(canViewResults
+                    ? "Viewing results for the poll"
+                    : "Waiting for results to be revealed for the poll"),
+                SizedBox(
+                  height: 20,
+                ),
+                UIGenerator.heading(this.widget.poll.question)
+              ],
+            ),
+          ),
+          UIGenerator.label("TOTAL TALLY FROM " +
+              summary.totalCount.toString() +
+              " PARTICIPANTS"),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  canViewResults
+                      ? UIGenerator.normalText(
+                          "Yes")
+                      : UIGenerator.fadedNormalText("Yes"),
+                       SizedBox(
+                      height: 35,
+                    ),
+                  canViewResults
+                      ? UIGenerator.normalText(
+                          "No")
+                      : UIGenerator.fadedNormalText("No"),
+                       SizedBox(
+                      height: 35,
+                    ),
+                  UIGenerator.fadedNormalText("Still Answering...")
+                ],
+              ),
+              SizedBox(width: 36,),
+              Expanded(
+                              child: Column(
+                  children: <Widget>[
+                    UIGenerator.progressBar(canViewResults ? summary.yesCount : 0,
+                        summary.totalCount, UIGenerator.green, !canViewResults,
+                        showAmount: true),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    UIGenerator.progressBar(canViewResults ? summary.noCount : 0,
+                        summary.totalCount, UIGenerator.red, !canViewResults,
+                        showAmount: true),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    UIGenerator.progressBar(summary.pendingCount,
+                        summary.totalCount, UIGenerator.yellow, true,
+                        showAmount: true),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
+      );
+    }
+    return UIGenerator.loading(message: "getting results");
   }
 
   Future<void> setPendingAnswer() async {
@@ -115,9 +248,7 @@ class _YesNoPollState extends State<YesNoPoll> {
         pending: true,
         answer: AnswerEnumYES_NO.YES,
         respondantId: this.widget.user.id));
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Widget inActivePoll() {
@@ -125,15 +256,27 @@ class _YesNoPollState extends State<YesNoPoll> {
   }
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-    this.widget.poll.answers.listen((data){
-      print("answers updated ------");
+
+    this.userAnswerStream =
+        this.widget.poll.getAnswerOfUser(this.widget.user.id);
+
+    // this.widget.poll.answers.listen((data) {
+    //   print("answers updated ------");
+    // });
+
+    this.widget.poll.getSummaryStream(this.widget.user.id).listen((data) {
+      print("poll summary updated ------ ");
+      print(data.toString());
+      setState(() {
+        summary = data;
+      });
     });
 
-    this.widget.poll.getAnswerOfUser(this.widget.user.id).listen((data){
-      print("user answers updated ------ ");
-      print(data.toString());
-    });
+    // this.widget.poll.getAnswerOfUser(this.widget.user.id).listen((data) {
+    //   print("user answers updated ------ ");
+    //   print(data.toString());
+    // });
   }
 }

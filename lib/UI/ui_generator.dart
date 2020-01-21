@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UIGenerator {
+  static Color green = Color.fromRGBO(132, 210, 132, 1);
+  static Color red = Color.fromRGBO(242, 122, 110, 1);
+  static Color yellow = Color.fromRGBO(248, 204, 70, 1);
+
   static Widget logo() {
     return Row(
       children: <Widget>[
@@ -49,6 +53,42 @@ class UIGenerator {
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
+  }
+
+  static progressBar(int current, int total, Color color, bool disabled, {bool showAmount = false}) {
+    if(showAmount){
+      return Row(
+        // mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[disabled ? UIGenerator.fadedNormalText(current.toString()) : UIGenerator.normalText(current.toString()), SizedBox(width: 8), Expanded(child: UIGenerator.progressBar(current, total, color, disabled, showAmount: false))],);
+    }
+    if(disabled){
+      color = Color.fromRGBO(190, 190, 203, 1);
+    }
+    return Container(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+                flex: current,
+                child: Container(
+                    width: 15,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                      color: color,
+                    ))),
+            Expanded(
+                flex: total - current,
+                child: Container(
+                  width: 15,
+                ))
+          ],
+        ),
+        height: 15,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          color: Color.fromRGBO(243, 243, 247, 1),
+        ));
   }
 
   static Widget fadedNormalText(String text) {

@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 40,
                   ),
                   UIGenerator.button("Join", login)
+                  
                 ],
               ),
             ),
