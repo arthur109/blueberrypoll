@@ -1,6 +1,7 @@
 import 'package:blueberrypoll/Data/database_interface.dart';
 import 'package:blueberrypoll/Logic/answer.dart';
 import 'package:blueberrypoll/Logic/poll.dart';
+import 'package:blueberrypoll/Logic/star_rating_answer.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/Logic/yes_no_answer.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
@@ -11,20 +12,21 @@ import 'package:flutter/material.dart';
 
 import 'create_poll.dart';
 
-class YesNoPoll extends StatefulWidget {
+class StarRatingPoll extends StatefulWidget {
   Poll poll;
   DatabaseInterface database;
   UserP user;
-  YesNoPoll(this.poll, this.user, this.database);
+  StarRatingPoll(this.poll, this.user, this.database);
   @override
-  _YesNoPollState createState() => _YesNoPollState();
+  _StarRatingPollState createState() => _StarRatingPollState();
 }
 
-class _YesNoPollState extends State<YesNoPoll> {
+class _StarRatingPollState extends State<StarRatingPoll> {
   Stream userAnswerStream;
   Stream participantIsActiveStream;
-  PollSummaryYES_NO summary;
-  // = PollSummaryYES_NO(noCount: 0, pendingCount: 0, yesCount: 0, totalCount: 0);
+  PollSummarySTAR_RATING summary;
+  int starHovered = 0;
+  // = PollSummarySTAR_RATING(noCount: 0, pendingCount: 0, yesCount: 0, totalCount: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +88,8 @@ class _YesNoPollState extends State<YesNoPoll> {
   }
 
   Widget getAnswerWidget() {
-    return Cupertino.ListView(
-      shrinkWrap: true,
+          return Cupertino.ListView(
+        shrinkWrap: true,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: 100),
@@ -108,50 +110,51 @@ class _YesNoPollState extends State<YesNoPoll> {
           height: 11,
         ),
         ClipRRect(
-            borderRadius: new BorderRadius.circular(30.0),
+            borderRadius: new BorderRadius.circular(8.0),
             child: Row(
               children: <Widget>[
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      this.widget.poll.submitAnswer(AnswerYES_NO(
-                          pending: false,
-                          answer: AnswerEnumYES_NO.YES,
-                          respondantId: this.widget.user.id));
-                    },
-                    hoverColor: Color.fromRGBO(235, 235, 237, 1),
-                    child: Ink(
-                      color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(
-                        child: UIGenerator.coloredText(
-                            "Yes", Color.fromARGB(255, 91, 91, 111)),
-                      ),
-                    ),
-                  ),
-                ),
+                StarRatingButton(1, () {
+                  this.widget.poll.submitAnswer(AnswerSTAR_RATING(
+                      respondantId: this.widget.user.id,
+                      pending: false,
+                      answer: AnswerEnumSTAR_RATING.ONE));
+                }),
                 SizedBox(
-                  width: 6,
+                  width: 3,
                 ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      this.widget.poll.submitAnswer(AnswerYES_NO(
-                          pending: false,
-                          answer: AnswerEnumYES_NO.NO,
-                          respondantId: this.widget.user.id));
-                    },
-                    hoverColor: Color.fromRGBO(235, 235, 237, 1),
-                    child: Ink(
-                      color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(
-                        child: UIGenerator.coloredText(
-                            "No", Color.fromARGB(255, 91, 91, 111)),
-                      ),
-                    ),
-                  ),
+                StarRatingButton(2, () {
+                  this.widget.poll.submitAnswer(AnswerSTAR_RATING(
+                      respondantId: this.widget.user.id,
+                      pending: false,
+                      answer: AnswerEnumSTAR_RATING.TWO));
+                }),
+                SizedBox(
+                  width: 3,
                 ),
+                StarRatingButton(3, () {
+                  this.widget.poll.submitAnswer(AnswerSTAR_RATING(
+                      respondantId: this.widget.user.id,
+                      pending: false,
+                      answer: AnswerEnumSTAR_RATING.THREE));
+                }),
+                SizedBox(
+                  width: 3,
+                ),
+                StarRatingButton(4, () {
+                  this.widget.poll.submitAnswer(AnswerSTAR_RATING(
+                      respondantId: this.widget.user.id,
+                      pending: false,
+                      answer: AnswerEnumSTAR_RATING.FOUR));
+                }),
+                SizedBox(
+                  width: 3,
+                ),
+                StarRatingButton(5, () {
+                  this.widget.poll.submitAnswer(AnswerSTAR_RATING(
+                      respondantId: this.widget.user.id,
+                      pending: false,
+                      answer: AnswerEnumSTAR_RATING.FIVE));
+                }),
               ],
             ))
       ],
@@ -193,19 +196,27 @@ class _YesNoPollState extends State<YesNoPoll> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  canViewResults
-                      ? UIGenerator.normalText("Yes")
-                      : UIGenerator.fadedNormalText("Yes"),
+                  UIGenerator.StarRatingAnswerDisplay(5, !canViewResults),
                   SizedBox(
                     height: 35,
                   ),
-                  canViewResults
-                      ? UIGenerator.normalText("No")
-                      : UIGenerator.fadedNormalText("No"),
+                  UIGenerator.StarRatingAnswerDisplay(4, !canViewResults),
                   SizedBox(
                     height: 35,
                   ),
-                  UIGenerator.fadedNormalText("Still Answering...")
+                  UIGenerator.StarRatingAnswerDisplay(3, !canViewResults),
+                  SizedBox(
+                    height: 35,
+                  ),
+                  UIGenerator.StarRatingAnswerDisplay(2, !canViewResults),
+                  SizedBox(
+                    height: 35,
+                  ),
+                  UIGenerator.StarRatingAnswerDisplay(1, !canViewResults),
+                  SizedBox(
+                    height: 35,
+                  ),
+                  UIGenerator.fadedNormalText("Still Answering..."),
                 ],
               ),
               SizedBox(
@@ -215,18 +226,45 @@ class _YesNoPollState extends State<YesNoPoll> {
                 child: Column(
                   children: <Widget>[
                     UIGenerator.progressBar(
-                        canViewResults ? summary.yesCount : 0,
+                        canViewResults ? summary.fiveCount : 0,
                         summary.totalCount,
-                        UIGenerator.green,
+                        UIGenerator.yellow,
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
                       height: 35,
                     ),
                     UIGenerator.progressBar(
-                        canViewResults ? summary.noCount : 0,
+                        canViewResults ? summary.fourCount : 0,
                         summary.totalCount,
-                        UIGenerator.red,
+                        UIGenerator.yellow,
+                        !canViewResults,
+                        showAmount: true),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    UIGenerator.progressBar(
+                        canViewResults ? summary.threeCount : 0,
+                        summary.totalCount,
+                        UIGenerator.yellow,
+                        !canViewResults,
+                        showAmount: true),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    UIGenerator.progressBar(
+                        canViewResults ? summary.twoCount : 0,
+                        summary.totalCount,
+                        UIGenerator.yellow,
+                        !canViewResults,
+                        showAmount: true),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    UIGenerator.progressBar(
+                        canViewResults ? summary.oneCount : 0,
+                        summary.totalCount,
+                        UIGenerator.yellow,
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
@@ -287,11 +325,41 @@ class _YesNoPollState extends State<YesNoPoll> {
 
   Future<void> setPendingAnswer() async {
     print("---- set pending answer -----");
-    await this.widget.poll.submitAnswer(AnswerYES_NO(
+    await this.widget.poll.submitAnswer(AnswerSTAR_RATING(
         pending: true,
-        answer: AnswerEnumYES_NO.YES,
+        answer: AnswerEnumSTAR_RATING.ONE,
         respondantId: this.widget.user.id));
     setState(() {});
+  }
+
+  Widget StarRatingButton(int value, Function func) {
+    bool selected = (value <= this.starHovered);
+    return Expanded(
+      child: InkWell(
+        onTap: func,
+        onHover: (data) {
+          setState(() {
+            this.starHovered = value;
+          });
+        },
+        child: Container(
+          color: selected
+              ? UIGenerator.yellow.withOpacity(0.3)
+              : Color.fromARGB(255, 246, 246, 250),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: selected
+                ? Icon(
+                    Icons.star,
+                    color: UIGenerator.yellow,
+                    size: 32,
+                  )
+                : Icon(Icons.star_border,
+                    color: Color.fromARGB(255, 91, 91, 111), size: 32),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget inActivePoll() {

@@ -1,4 +1,4 @@
-package com.example.blueberrypoll
+package com.arthurf.blueberrypoll
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

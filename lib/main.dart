@@ -8,6 +8,7 @@ import 'package:blueberrypoll/Logic/yes_no_answer.dart';
 import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
 import 'package:blueberrypoll/UI/login.dart';
 import 'package:firebase/firebase.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -102,14 +103,14 @@ void main() async {
   // AnswerYES_NO_NOOPINION test2 = AnswerYES_NO_NOOPINION.fromMap(testMap);
   // print(test.answer);
 
-  runApp(MaterialApp(
+  runApp(CupertinoApp(
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      // Define the default Brightness and Colors
-      brightness: Brightness.light,
-      primaryColor: Colors.black,
-      accentColor: Colors.orangeAccent,
-    ),
+    // theme: ThemeData(
+    //   // Define the default Brightness and Colors
+    //   brightness: Brightness.light,
+    //   primaryColor: Colors.black,
+    //   accentColor: Colors.orangeAccent,
+    // ),
     home: LoginPage(database)
   ));
 }

@@ -37,7 +37,9 @@ class AnswerSTAR_RATING extends Answer {
           respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
-        );
+        ){
+          type = AnswerType.STAR_RATING;
+        }
 
   static Stream<PollSummary> generateSummaryStream(
       Stream<List<Answer>> answerListStream) {

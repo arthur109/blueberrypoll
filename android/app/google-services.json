@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "176622864765",
+    "firebase_url": "https://blueberry-poll-one.firebaseio.com",
+    "project_id": "blueberry-poll-one",
+    "storage_bucket": "blueberry-poll-one.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176622864765:android:f16a47540d4f49ebe9e414",
+        "android_client_info": {
+          "package_name": "com.arthurf.blueberrypoll"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176622864765-ffftd7fr8q7658gv5etoho6p19gmamu9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBURl8vXncDOKhezi3Hg65YLPnda77s90o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176622864765-ffftd7fr8q7658gv5etoho6p19gmamu9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

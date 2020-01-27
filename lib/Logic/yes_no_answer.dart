@@ -31,7 +31,9 @@ class AnswerYES_NO extends Answer {
           respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
-        );
+        ){
+          type = AnswerType.YES_NO;
+        }
 
     static AnswerYES_NO fromMap(Map map) {
     return AnswerYES_NO(

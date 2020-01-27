@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as Cupertino;
 import 'package:flutter/material.dart';
 
 class UIGenerator {
   static Color green = Color.fromRGBO(132, 210, 132, 1);
   static Color red = Color.fromRGBO(242, 122, 110, 1);
   static Color yellow = Color.fromRGBO(248, 204, 70, 1);
+  static Color orange = Color.fromRGBO(250, 160, 138, 1);
+  static Color grey = Color.fromRGBO(190, 190, 203, 1);
 
   static Widget logo() {
     return Row(
@@ -155,7 +157,7 @@ class UIGenerator {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            CupertinoActivityIndicator(),
+            Cupertino.CupertinoActivityIndicator(),
             SizedBox(
               height: 12,
             ),
@@ -174,7 +176,7 @@ class UIGenerator {
       );
     }
     return Center(
-      child: CupertinoActivityIndicator(),
+      child: Cupertino.CupertinoActivityIndicator(),
     );
   }
 
@@ -184,9 +186,43 @@ class UIGenerator {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
           decoration: BoxDecoration(
-              color: Color.fromRGBO(250, 160, 138, 1),
+              color: UIGenerator.orange,
               borderRadius: BorderRadius.all(Radius.circular(6))),
           child: coloredText(text, Colors.white),
         ));
+  }
+
+  static Widget buttonOutlined(String text, Function func) {
+    return InkWell(
+        onTap: func,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+          decoration: BoxDecoration(
+            border: Border.all(color: UIGenerator.orange, width: 2),
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(6))),
+          child: coloredText(text, UIGenerator.orange),
+        ));
+  }
+
+  static Widget StarRatingAnswerDisplay(int value, bool disabled){
+    Widget highlighted = Icon(Icons.star, color: disabled ?  UIGenerator.grey : UIGenerator.yellow,);
+    Widget notHighlighted = Icon(Icons.star_border, color:  UIGenerator.grey);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+      UIGenerator.coloredText(value.toString(), disabled ? UIGenerator.grey : UIGenerator.yellow),
+      SizedBox(width: 6,),
+      1 <= value ? highlighted : notHighlighted,
+      SizedBox(width: 8,),
+      2 <= value ? highlighted : notHighlighted,
+      SizedBox(width: 8,),
+      3 <= value ? highlighted : notHighlighted,
+      SizedBox(width: 8,),
+      4 <= value ? highlighted : notHighlighted,
+      SizedBox(width: 8,),
+      5 <= value ? highlighted : notHighlighted
+    ],);
   }
 }

@@ -4,7 +4,7 @@ import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as Cupertino;
 import 'package:flutter/material.dart';
 
 class CreatePollScreen extends StatefulWidget {
@@ -115,7 +115,13 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
             })),          ],
         ),
         SizedBox(height: 45,),
-        UIGenerator.button("Start Poll", startPoll)
+        Row(
+          children: <Widget>[
+            UIGenerator.buttonOutlined("Cancel", this.widget.creationCallBack),
+            Expanded(child: Container(),),
+            UIGenerator.button("Start Poll", startPoll),
+          ],
+        )
       ],
     );
   }

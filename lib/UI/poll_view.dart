@@ -3,9 +3,12 @@ import 'package:blueberrypoll/Logic/answer.dart';
 import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
+import 'package:blueberrypoll/UI/star_rating_poll.dart';
+import 'package:blueberrypoll/UI/text_feild_poll.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
+import 'package:blueberrypoll/UI/yes_no_noopinion.dart';
 import 'package:blueberrypoll/UI/yes_no_poll.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as Cupertino;
 import 'package:flutter/material.dart';
 
 import 'create_poll.dart';
@@ -30,8 +33,14 @@ class _PollViewState extends State<PollView> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (poll.answerType == AnswerType.YES_NO) {
             return YesNoPoll(this.poll, this.widget.user, this.widget.database);
+          } else  if (poll.answerType == AnswerType.YES_NO_NOOPINION) {
+            return YesNoNoOpinionPoll(this.poll, this.widget.user, this.widget.database);
+          } else  if (poll.answerType == AnswerType.TEXT_FEILD) {
+            return TextFeildPoll(this.poll, this.widget.user, this.widget.database);
+          }else  if (poll.answerType == AnswerType.STAR_RATING) {
+            return StarRatingPoll(this.poll, this.widget.user, this.widget.database);
           } else {
-            return Text("poll type not implemented");
+            return Text("poll type not implemented - "+poll.answerType.toString());
           }
         }
         return UIGenerator.loading(message: "fetching poll info");

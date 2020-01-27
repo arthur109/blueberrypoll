@@ -3,7 +3,7 @@ import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/poll_view.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as Cupertino;
 import 'package:flutter/material.dart';
 
 import 'create_poll.dart';
@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
         child: Row(
       children: <Widget>[
         Expanded(child: leftColumn()),
-        SizedBox(width: 400, child: rightColumn())
+        SizedBox(width: 500, child: rightColumn())
       ],
     ));
   }
@@ -115,6 +115,7 @@ class _MainPageState extends State<MainPage> {
           Icon(
             Icons.add_circle,
             size: 20,
+            color: Colors.black,
           ),
           SizedBox(
             width: 7,
@@ -131,7 +132,15 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget participants() {
-    return ParticipantsView(null, this.widget.database);
+    return StreamBuilder(
+      stream: this.widget.database.getActivePollId(),
+      initialData: "none" ,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        print("-  - - ");
+        print(snapshot.data);
+        return ParticipantsView(snapshot.data == "none" ? null : snapshot.data, this.widget.user.id, this.widget.database);
+      },
+    );
   }
 
   Widget createPollScreen() {

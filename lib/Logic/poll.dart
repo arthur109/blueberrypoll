@@ -83,17 +83,15 @@ class Poll {
   String creatorId;
   Stream<List<Answer>> answers;
   Stream<dynamic> areResultsVisible;
-  Stream<dynamic> isActive;
 
   Poll({@required this.id, @required this.database}) {
-    this.isActive = database.getActivePollId().map((data){return (data == this.id);});
     print("is active initialized");
 
 
     Stream<PollSnapshot> tempAllInfoStream = this
         .database
         .entryPoint
-        .child(DatabaseInterface.POLLS_NODE + "/" + this.id)
+        .child(DatabaseInterface.POLLS_NODE +"/" + this.id)
         .onValue
         .map((QueryEvent data) {
       Map pollMap = data.snapshot.val();
@@ -110,7 +108,7 @@ class Poll {
           isActive: null);
     });
 
-    this.allInfoStream = CombineLatestStream.combine2(tempAllInfoStream, this.isActive, (PollSnapshot snapshot, isActive){
+    this.allInfoStream = CombineLatestStream.combine2(tempAllInfoStream, this.isActiveStream(), (PollSnapshot snapshot, isActive){
       snapshot.isActive = isActive;
       return snapshot;
     });
@@ -128,6 +126,10 @@ class Poll {
     });
     print("result visibilty stream initialized");
     
+  }
+
+  Stream<bool> isActiveStream(){
+    return database.getActivePollId().map((data){return (data == this.id);});
   }
 
   Stream<QueryEvent> fetchStreamFeild(String feild) {
@@ -213,10 +215,11 @@ class Poll {
       return summary;
     };
 
-    return CombineLatestStream.combine2(
-        stream.map(configureSummaryPermissions), this.areResultsVisible,
-        (pollSummary, areResultsVisible) {
+    return CombineLatestStream.combine3(
+        stream.map(configureSummaryPermissions), this.areResultsVisible, this.isActiveStream(),
+        (pollSummary, areResultsVisible, isActive) {
       pollSummary.areResultsVisible = areResultsVisible;
+      pollSummary.isActive = isActive;
       return pollSummary;
     });
   }
@@ -259,6 +262,10 @@ class Poll {
 
   Future<void> submitAnswer(Answer answer) async {
     return await this.database.entryPoint.child(answersPath()+"/"+answer.respondantId).set(answer.toMap());
+  }
+
+  Future<void> clearAnswers() async {
+    return await this.database.entryPoint.child(answersPath()).set({});
   }
 
   String answersPath(){

@@ -28,7 +28,9 @@ class AnswerTEXT_FEILD extends Answer {
           respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
-        );
+        ){
+          type = AnswerType.TEXT_FEILD;
+        }
   static AnswerTEXT_FEILD fromMap(Map map) {
     return AnswerTEXT_FEILD(
       respondantId: map[Answer.RESPONDANT_ID_FEILD],

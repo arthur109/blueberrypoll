@@ -33,7 +33,9 @@ class AnswerYES_NO_NOOPINION extends Answer {
           respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
-        );
+        ){
+          type = AnswerType.YES_NO_NOOPINION;
+        }
 
   static AnswerYES_NO_NOOPINION fromMap(Map map) {
     return AnswerYES_NO_NOOPINION(

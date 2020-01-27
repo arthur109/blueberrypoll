@@ -3,6 +3,7 @@ import 'package:blueberrypoll/Logic/answer.dart';
 import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/Logic/yes_no_answer.dart';
+import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
 import 'package:flutter/cupertino.dart' as Cupertino;
@@ -11,19 +12,19 @@ import 'package:flutter/material.dart';
 
 import 'create_poll.dart';
 
-class YesNoPoll extends StatefulWidget {
+class YesNoNoOpinionPoll extends StatefulWidget {
   Poll poll;
   DatabaseInterface database;
   UserP user;
-  YesNoPoll(this.poll, this.user, this.database);
+  YesNoNoOpinionPoll(this.poll, this.user, this.database);
   @override
-  _YesNoPollState createState() => _YesNoPollState();
+  _YesNoNoOpinionPollState createState() => _YesNoNoOpinionPollState();
 }
 
-class _YesNoPollState extends State<YesNoPoll> {
+class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
   Stream userAnswerStream;
   Stream participantIsActiveStream;
-  PollSummaryYES_NO summary;
+  PollSummaryYES_NO_NOOPINION summary;
   // = PollSummaryYES_NO(noCount: 0, pendingCount: 0, yesCount: 0, totalCount: 0);
 
   @override
@@ -86,8 +87,8 @@ class _YesNoPollState extends State<YesNoPoll> {
   }
 
   Widget getAnswerWidget() {
-    return Cupertino.ListView(
-      shrinkWrap: true,
+      return Cupertino.ListView(
+        shrinkWrap: true,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: 100),
@@ -114,9 +115,9 @@ class _YesNoPollState extends State<YesNoPoll> {
                 Expanded(
                   child: InkWell(
                     onTap: () {
-                      this.widget.poll.submitAnswer(AnswerYES_NO(
+                      this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
                           pending: false,
-                          answer: AnswerEnumYES_NO.YES,
+                          answer: AnswerEnumYES_NO_NOOPINION.YES,
                           respondantId: this.widget.user.id));
                     },
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
@@ -136,9 +137,9 @@ class _YesNoPollState extends State<YesNoPoll> {
                 Expanded(
                   child: InkWell(
                     onTap: () {
-                      this.widget.poll.submitAnswer(AnswerYES_NO(
+                      this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
                           pending: false,
-                          answer: AnswerEnumYES_NO.NO,
+                          answer: AnswerEnumYES_NO_NOOPINION.NO,
                           respondantId: this.widget.user.id));
                     },
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
@@ -153,7 +154,31 @@ class _YesNoPollState extends State<YesNoPoll> {
                   ),
                 ),
               ],
-            ))
+            )),
+        SizedBox(
+          height: 6,
+        ),
+        Center(
+          child: Expanded(
+            child: InkWell(
+              onTap: () {
+                this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
+                    pending: false,
+                    answer: AnswerEnumYES_NO_NOOPINION.NOOPINION,
+                    respondantId: this.widget.user.id));
+              },
+              hoverColor: Color.fromRGBO(235, 235, 237, 1),
+              child: Ink(
+                color: Color.fromARGB(255, 246, 246, 250),
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(
+                  child: UIGenerator.coloredText(
+                      "No Opinion", Color.fromARGB(255, 91, 91, 111)),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -162,7 +187,7 @@ class _YesNoPollState extends State<YesNoPoll> {
     if (summary != null) {
       bool canViewResults =
           (summary.areResultsVisible || summary.hasResultVisibilityPrivilege);
-      return Cupertino.ListView(
+          return Cupertino.ListView(
         shrinkWrap: true,
         children: <Widget>[
           Padding(
@@ -205,6 +230,12 @@ class _YesNoPollState extends State<YesNoPoll> {
                   SizedBox(
                     height: 35,
                   ),
+                  canViewResults
+                      ? UIGenerator.normalText("No Opinion")
+                      : UIGenerator.fadedNormalText("No"),
+                  SizedBox(
+                    height: 35,
+                  ),
                   UIGenerator.fadedNormalText("Still Answering...")
                 ],
               ),
@@ -227,6 +258,15 @@ class _YesNoPollState extends State<YesNoPoll> {
                         canViewResults ? summary.noCount : 0,
                         summary.totalCount,
                         UIGenerator.red,
+                        !canViewResults,
+                        showAmount: true),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    UIGenerator.progressBar(
+                        canViewResults ? summary.noOpinionCount : 0,
+                        summary.totalCount,
+                        UIGenerator.yellow,
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
@@ -269,8 +309,8 @@ class _YesNoPollState extends State<YesNoPoll> {
           width: 20,
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
-          this.widget.poll.clearAnswers().then((data) {
-            setState(() {
+          this.widget.poll.clearAnswers().then((data){
+            setState((){
               summary = null;
             });
           });
@@ -284,12 +324,11 @@ class _YesNoPollState extends State<YesNoPoll> {
       ],
     );
   }
-
   Future<void> setPendingAnswer() async {
     print("---- set pending answer -----");
-    await this.widget.poll.submitAnswer(AnswerYES_NO(
+    await this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
         pending: true,
-        answer: AnswerEnumYES_NO.YES,
+        answer: AnswerEnumYES_NO_NOOPINION.YES,
         respondantId: this.widget.user.id));
     setState(() {});
   }

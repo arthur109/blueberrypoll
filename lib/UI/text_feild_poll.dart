@@ -1,8 +1,10 @@
 import 'package:blueberrypoll/Data/database_interface.dart';
 import 'package:blueberrypoll/Logic/answer.dart';
 import 'package:blueberrypoll/Logic/poll.dart';
+import 'package:blueberrypoll/Logic/text_feild_answer.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/Logic/yes_no_answer.dart';
+import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
 import 'package:flutter/cupertino.dart' as Cupertino;
@@ -11,19 +13,21 @@ import 'package:flutter/material.dart';
 
 import 'create_poll.dart';
 
-class YesNoPoll extends StatefulWidget {
+class TextFeildPoll extends StatefulWidget {
   Poll poll;
   DatabaseInterface database;
   UserP user;
-  YesNoPoll(this.poll, this.user, this.database);
+  TextFeildPoll(this.poll, this.user, this.database);
   @override
-  _YesNoPollState createState() => _YesNoPollState();
+  _TextFeildPollState createState() => _TextFeildPollState();
 }
 
-class _YesNoPollState extends State<YesNoPoll> {
+class _TextFeildPollState extends State<TextFeildPoll> {
   Stream userAnswerStream;
   Stream participantIsActiveStream;
-  PollSummaryYES_NO summary;
+  PollSummaryTEXT_FEILD summary;
+  final _formKey = GlobalKey<FormState>();
+  final answerTextboxController = TextEditingController();
   // = PollSummaryYES_NO(noCount: 0, pendingCount: 0, yesCount: 0, totalCount: 0);
 
   @override
@@ -86,8 +90,8 @@ class _YesNoPollState extends State<YesNoPoll> {
   }
 
   Widget getAnswerWidget() {
-    return Cupertino.ListView(
-      shrinkWrap: true,
+      return Cupertino.ListView(
+        shrinkWrap: true,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: 100),
@@ -107,62 +111,59 @@ class _YesNoPollState extends State<YesNoPoll> {
         SizedBox(
           height: 11,
         ),
-        ClipRRect(
-            borderRadius: new BorderRadius.circular(30.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      this.widget.poll.submitAnswer(AnswerYES_NO(
-                          pending: false,
-                          answer: AnswerEnumYES_NO.YES,
-                          respondantId: this.widget.user.id));
-                    },
-                    hoverColor: Color.fromRGBO(235, 235, 237, 1),
-                    child: Ink(
-                      color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(
-                        child: UIGenerator.coloredText(
-                            "Yes", Color.fromARGB(255, 91, 91, 111)),
-                      ),
-                    ),
+        Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    color: Color.fromRGBO(243, 243, 247, 1)),
+                padding: EdgeInsets.only(top: 8, left: 17, right: 17),
+                child: TextFormField(
+                  style: UIGenerator.textFeildTextStyle(),
+                  onEditingComplete: submitAnswer,
+                  controller: answerTextboxController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    border: InputBorder.none,
                   ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter an answer.';
+                    }
+                    return null;
+                  },
                 ),
-                SizedBox(
-                  width: 6,
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      this.widget.poll.submitAnswer(AnswerYES_NO(
-                          pending: false,
-                          answer: AnswerEnumYES_NO.NO,
-                          respondantId: this.widget.user.id));
-                    },
-                    hoverColor: Color.fromRGBO(235, 235, 237, 1),
-                    child: Ink(
-                      color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(
-                        child: UIGenerator.coloredText(
-                            "No", Color.fromARGB(255, 91, 91, 111)),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ))
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        UIGenerator.button("Submit Answer", submitAnswer)
       ],
     );
+  }
+
+  void submitAnswer(){
+    if(_formKey.currentState.validate()){
+      this.widget.poll.submitAnswer(AnswerTEXT_FEILD(
+        respondantId: this.widget.user.id,
+        answer: this.answerTextboxController.text.trim(),
+        pending: false
+      ));
+    }
   }
 
   Widget pollSummary() {
     if (summary != null) {
       bool canViewResults =
           (summary.areResultsVisible || summary.hasResultVisibilityPrivilege);
-      return Cupertino.ListView(
+          return Cupertino.ListView(
         shrinkWrap: true,
         children: <Widget>[
           Padding(
@@ -194,14 +195,8 @@ class _YesNoPollState extends State<YesNoPoll> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   canViewResults
-                      ? UIGenerator.normalText("Yes")
-                      : UIGenerator.fadedNormalText("Yes"),
-                  SizedBox(
-                    height: 35,
-                  ),
-                  canViewResults
-                      ? UIGenerator.normalText("No")
-                      : UIGenerator.fadedNormalText("No"),
+                      ? UIGenerator.normalText("Submitted Answer")
+                      : UIGenerator.fadedNormalText("Submitted Answer"),
                   SizedBox(
                     height: 35,
                   ),
@@ -215,19 +210,10 @@ class _YesNoPollState extends State<YesNoPoll> {
                 child: Column(
                   children: <Widget>[
                     UIGenerator.progressBar(
-                        canViewResults ? summary.yesCount : 0,
+                        summary.answeredCount,
                         summary.totalCount,
-                        UIGenerator.green,
-                        !canViewResults,
-                        showAmount: true),
-                    SizedBox(
-                      height: 35,
-                    ),
-                    UIGenerator.progressBar(
-                        canViewResults ? summary.noCount : 0,
-                        summary.totalCount,
-                        UIGenerator.red,
-                        !canViewResults,
+                        Colors.black,
+                        false,
                         showAmount: true),
                     SizedBox(
                       height: 35,
@@ -269,8 +255,8 @@ class _YesNoPollState extends State<YesNoPoll> {
           width: 20,
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
-          this.widget.poll.clearAnswers().then((data) {
-            setState(() {
+          this.widget.poll.clearAnswers().then((data){
+            setState((){
               summary = null;
             });
           });
@@ -287,9 +273,9 @@ class _YesNoPollState extends State<YesNoPoll> {
 
   Future<void> setPendingAnswer() async {
     print("---- set pending answer -----");
-    await this.widget.poll.submitAnswer(AnswerYES_NO(
+    await this.widget.poll.submitAnswer(AnswerTEXT_FEILD(
         pending: true,
-        answer: AnswerEnumYES_NO.YES,
+        answer: "This is a bug. Please report it.",
         respondantId: this.widget.user.id));
     setState(() {});
   }

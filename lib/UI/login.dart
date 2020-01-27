@@ -1,5 +1,5 @@
 import 'package:blueberrypoll/UI/main_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as Cupertino;
 import 'package:flutter/material.dart';
 import 'ui_generator.dart';
 import 'package:blueberrypoll/Data/database_interface.dart';
@@ -109,7 +109,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget loadingPage() {
     return Material(
       child: UIGenerator.loading(message: "loging you in")
-  
     );
   }
 
