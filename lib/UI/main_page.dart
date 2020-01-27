@@ -78,7 +78,7 @@ class _MainPageState extends State<MainPage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               UIGenerator.subtitle(
-                  "Here's the last 10 polls you participated in"),
+                  "Here's the last 10 polls that occured"),
               SizedBox(
                 height: 20,
               ),

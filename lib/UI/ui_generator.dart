@@ -7,6 +7,7 @@ class UIGenerator {
   static Color yellow = Color.fromRGBO(248, 204, 70, 1);
   static Color orange = Color.fromRGBO(250, 160, 138, 1);
   static Color grey = Color.fromRGBO(190, 190, 203, 1);
+  static Color lightGrey = Color.fromARGB(255, 246, 246, 250);
 
   static Widget logo() {
     return Row(

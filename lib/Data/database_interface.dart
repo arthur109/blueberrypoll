@@ -81,6 +81,10 @@ class DatabaseInterface {
     return poll;
   }
 
+  // Future<dynamic> lastTenPolls() async {
+  //   ((await this.entryPoint.child(DatabaseInterface.POLLS_NODE).limitToFirst(10).once("value"))).val();
+  // }
+
   Stream getActivePollId() {
     return this
         .entryPoint
