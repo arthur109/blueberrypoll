@@ -1,0 +1,26 @@
+[
+    {
+        "family": "Muli",
+        "fonts": [
+            {
+                "asset": "fonts/Muli/Muli-VariableFont:wght.ttf"
+            }
+        ]
+    },
+    {
+        "family": "MontserratAlternates",
+        "fonts": [
+            {
+                "asset": "fonts/Montserrat_Alternates/MontserratAlternates-Regular.ttf"
+            }
+        ]
+    },
+    {
+        "fonts": [
+            {
+                "asset": "fonts/MaterialIcons-Regular.ttf"
+            }
+        ],
+        "family": "MaterialIcons"
+    }
+]
