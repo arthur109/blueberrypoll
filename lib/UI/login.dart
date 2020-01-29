@@ -27,32 +27,34 @@ class _LoginPageState extends State<LoginPage> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    if(UIGenerator.width == null){
+      UIGenerator.width = MediaQuery.of(context).size.width;
+    }
     return loading
         ? loadingPage()
         : Material(
             child: ConstrainedBox(
             constraints: new BoxConstraints(
-              minHeight: 5.0,
-              minWidth: 5.0,
-              maxHeight: 30.0,
-              maxWidth: 30.0,
+              minHeight: UIGenerator.toUnits(5.0),
+              minWidth: UIGenerator.toUnits(5.0),
+              maxHeight: UIGenerator.toUnits(30.0),
+              maxWidth: UIGenerator.toUnits(30.0),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top: 40, left: 115, right: 115),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: EdgeInsets.only(top: UIGenerator.toUnits(40), left: UIGenerator.toUnits(115), right: 115),
+              child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   UIGenerator.logo(),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 100),
+                    padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         UIGenerator.subtitle(
                             "Welcome to the juiciest polling tool around"),
                         SizedBox(
-                          height: 20,
+                          height: UIGenerator.toUnits(20),
                         ),
                         UIGenerator.heading("Enter your name to join"),
                       ],
@@ -60,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   UIGenerator.label("YOUR NAME"),
                   SizedBox(
-                    height: 11,
+                    height: UIGenerator.toUnits(11),
                   ),
                   Form(
                       key: _formKey,
@@ -71,10 +73,11 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
+                                    BorderRadius.all(Radius.circular(UIGenerator.toUnits(4.0))),
                                 color: Color.fromRGBO(243, 243, 247, 1)),
-                            padding: EdgeInsets.only(top: 8, left: 17, right: 17),
+                            padding: EdgeInsets.only(top: UIGenerator.toUnits(8), left: UIGenerator.toUnits(17), right: UIGenerator.toUnits(17)),
                             child: TextFormField(
+                              textCapitalization: TextCapitalization.words,
                               // initialValue: "Arthur F",
                               // autofocus: true,
                               style: UIGenerator.textFeildTextStyle(),
@@ -96,9 +99,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   SizedBox(
-                    height: 40,
+                    height: UIGenerator.toUnits(40),
                   ),
-                  UIGenerator.button("Join", login)
+                  
+                  Align(child: UIGenerator.button("Join", login), alignment: Alignment.centerLeft,),
+                   
+                  
                   
                 ],
               ),
@@ -108,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget loadingPage() {
     return Material(
-      child: UIGenerator.loading(message: "loging you in")
+      child: UIGenerator.loading(message: "logging you in")
     );
   }
 
@@ -128,5 +134,10 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context) => MainPage(this.widget.database, signedInUser)),
       );
     }
+  }
+
+  @override
+  void initState() { 
+    super.initState();
   }
 }

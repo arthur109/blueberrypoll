@@ -30,9 +30,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
 
   @override
   Widget build(BuildContext context) {
-    return this.widget.poll.isCreator(this.widget.user.id)
-        ? creatorView()
-        : participantView();
+    return  participantView();
   }
 
   Widget creatorView() {
@@ -92,14 +90,14 @@ class _StarRatingPollState extends State<StarRatingPoll> {
         shrinkWrap: true,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 100),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               UIGenerator.subtitle("Currently polling"),
               SizedBox(
-                height: 20,
+                height: UIGenerator.toUnits(20),
               ),
               UIGenerator.heading(this.widget.poll.question)
             ],
@@ -107,10 +105,10 @@ class _StarRatingPollState extends State<StarRatingPoll> {
         ),
         UIGenerator.label("YOUR ANSWER"),
         SizedBox(
-          height: 11,
+          height: UIGenerator.toUnits(11),
         ),
         ClipRRect(
-            borderRadius: new BorderRadius.circular(8.0),
+            borderRadius: new BorderRadius.circular(UIGenerator.toUnits(8.0)),
             child: Row(
               children: <Widget>[
                 StarRatingButton(1, () {
@@ -120,7 +118,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                       answer: AnswerEnumSTAR_RATING.ONE));
                 }),
                 SizedBox(
-                  width: 3,
+                  width: UIGenerator.toUnits(3),
                 ),
                 StarRatingButton(2, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
@@ -129,7 +127,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                       answer: AnswerEnumSTAR_RATING.TWO));
                 }),
                 SizedBox(
-                  width: 3,
+                  width: UIGenerator.toUnits(3),
                 ),
                 StarRatingButton(3, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
@@ -138,7 +136,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                       answer: AnswerEnumSTAR_RATING.THREE));
                 }),
                 SizedBox(
-                  width: 3,
+                  width: UIGenerator.toUnits(3),
                 ),
                 StarRatingButton(4, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
@@ -147,7 +145,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                       answer: AnswerEnumSTAR_RATING.FOUR));
                 }),
                 SizedBox(
-                  width: 3,
+                  width: UIGenerator.toUnits(3),
                 ),
                 StarRatingButton(5, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
@@ -169,7 +167,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
         shrinkWrap: true,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 100),
+            padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -178,7 +176,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                     ? "Viewing results for the poll"
                     : "Waiting for results to be revealed for the poll"),
                 SizedBox(
-                  height: 20,
+                  height: UIGenerator.toUnits(20),
                 ),
                 UIGenerator.heading(this.widget.poll.question)
               ],
@@ -188,7 +186,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
               summary.totalCount.toString() +
               " PARTICIPANTS"),
           SizedBox(
-            height: 20,
+            height: UIGenerator.toUnits(20),
           ),
           Row(
             children: <Widget>[
@@ -198,29 +196,29 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                 children: <Widget>[
                   UIGenerator.StarRatingAnswerDisplay(5, !canViewResults),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.StarRatingAnswerDisplay(4, !canViewResults),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.StarRatingAnswerDisplay(3, !canViewResults),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.StarRatingAnswerDisplay(2, !canViewResults),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.StarRatingAnswerDisplay(1, !canViewResults),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.fadedNormalText("Still Answering..."),
                 ],
               ),
               SizedBox(
-                width: 36,
+                width: UIGenerator.toUnits(36),
               ),
               Expanded(
                 child: Column(
@@ -232,7 +230,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(
                         canViewResults ? summary.fourCount : 0,
@@ -241,7 +239,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(
                         canViewResults ? summary.threeCount : 0,
@@ -250,7 +248,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(
                         canViewResults ? summary.twoCount : 0,
@@ -259,7 +257,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(
                         canViewResults ? summary.oneCount : 0,
@@ -268,7 +266,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(summary.pendingCount,
                         summary.totalCount, UIGenerator.yellow, true,
@@ -279,7 +277,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
             ],
           ),
           SizedBox(
-            height: 75,
+            height: UIGenerator.toUnits(75),
           ),
           summary.hasResultVisibilityPrivilege
               ? SummaryButtonBar(summary.isActive, summary.areResultsVisible)
@@ -304,7 +302,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                 this.widget.poll.setResultVisibility(true);
               }),
         SizedBox(
-          width: 20,
+          width: UIGenerator.toUnits(20),
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
           this.widget.poll.clearAnswers().then((data) {
@@ -346,16 +344,16 @@ class _StarRatingPollState extends State<StarRatingPoll> {
           color: selected
               ? UIGenerator.yellow.withOpacity(0.3)
               : Color.fromARGB(255, 246, 246, 250),
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
           child: Center(
             child: selected
                 ? Icon(
                     Icons.star,
                     color: UIGenerator.yellow,
-                    size: 32,
+                    size: UIGenerator.toUnits(32),
                   )
                 : Icon(Icons.star_border,
-                    color: Color.fromARGB(255, 91, 91, 111), size: 32),
+                    color: Color.fromARGB(255, 91, 91, 111), size: UIGenerator.toUnits(32)),
           ),
         ),
       ),

@@ -29,9 +29,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
 
   @override
   Widget build(BuildContext context) {
-    return this.widget.poll.isCreator(this.widget.user.id)
-        ? creatorView()
-        : participantView();
+    return  participantView();
   }
 
   Widget creatorView() {
@@ -91,14 +89,14 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
         shrinkWrap: true,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 100),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               UIGenerator.subtitle("Currently polling"),
               SizedBox(
-                height: 20,
+                height: UIGenerator.toUnits(20),
               ),
               UIGenerator.heading(this.widget.poll.question)
             ],
@@ -109,7 +107,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
           height: 11,
         ),
         ClipRRect(
-            borderRadius: new BorderRadius.circular(30.0),
+            borderRadius: new BorderRadius.circular(UIGenerator.toUnits(30.0)),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -123,7 +121,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
                     child: Ink(
                       color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
                       child: Center(
                         child: UIGenerator.coloredText(
                             "Yes", Color.fromARGB(255, 91, 91, 111)),
@@ -132,7 +130,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                   ),
                 ),
                 SizedBox(
-                  width: 6,
+                  width: UIGenerator.toUnits(6),
                 ),
                 Expanded(
                   child: InkWell(
@@ -145,7 +143,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
                     child: Ink(
                       color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
                       child: Center(
                         child: UIGenerator.coloredText(
                             "No", Color.fromARGB(255, 91, 91, 111)),
@@ -156,7 +154,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
               ],
             )),
         SizedBox(
-          height: 6,
+          height: UIGenerator.toUnits(6),
         ),
         Center(
           child: Expanded(
@@ -170,7 +168,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
               hoverColor: Color.fromRGBO(235, 235, 237, 1),
               child: Ink(
                 color: Color.fromARGB(255, 246, 246, 250),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
                 child: Center(
                   child: UIGenerator.coloredText(
                       "No Opinion", Color.fromARGB(255, 91, 91, 111)),
@@ -191,7 +189,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
         shrinkWrap: true,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 100),
+            padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -200,7 +198,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                     ? "Viewing results for the poll"
                     : "Waiting for results to be revealed for the poll"),
                 SizedBox(
-                  height: 20,
+                  height: UIGenerator.toUnits(20),
                 ),
                 UIGenerator.heading(this.widget.poll.question)
               ],
@@ -210,7 +208,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
               summary.totalCount.toString() +
               " PARTICIPANTS"),
           SizedBox(
-            height: 20,
+            height: UIGenerator.toUnits(20),
           ),
           Row(
             children: <Widget>[
@@ -222,25 +220,25 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                       ? UIGenerator.normalText("Yes")
                       : UIGenerator.fadedNormalText("Yes"),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   canViewResults
                       ? UIGenerator.normalText("No")
                       : UIGenerator.fadedNormalText("No"),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   canViewResults
                       ? UIGenerator.normalText("No Opinion")
                       : UIGenerator.fadedNormalText("No"),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.fadedNormalText("Still Answering...")
                 ],
               ),
               SizedBox(
-                width: 36,
+                width: UIGenerator.toUnits(36),
               ),
               Expanded(
                 child: Column(
@@ -252,7 +250,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(
                         canViewResults ? summary.noCount : 0,
@@ -261,7 +259,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(
                         canViewResults ? summary.noOpinionCount : 0,
@@ -270,7 +268,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                         !canViewResults,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(summary.pendingCount,
                         summary.totalCount, UIGenerator.yellow, true,
@@ -281,7 +279,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
             ],
           ),
           SizedBox(
-            height: 75,
+            height: UIGenerator.toUnits(75),
           ),
           summary.hasResultVisibilityPrivilege
               ? SummaryButtonBar(summary.isActive, summary.areResultsVisible)
@@ -306,7 +304,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                 this.widget.poll.setResultVisibility(true);
               }),
         SizedBox(
-          width: 20,
+          width: UIGenerator.toUnits(20),
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
           this.widget.poll.clearAnswers().then((data){

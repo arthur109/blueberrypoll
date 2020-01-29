@@ -25,20 +25,18 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return this.creatingPoll ? UIGenerator.loading(message: "creating poll") : Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return this.creatingPoll ? UIGenerator.loading(message: "creating poll") : ListView(
+     shrinkWrap: true,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 100),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               UIGenerator.subtitle("Everyone is waiting!"),
               SizedBox(
-                height: 20,
+                height: UIGenerator.toUnits(20),
               ),
               UIGenerator.heading("Start a New Poll")
             ],
@@ -46,7 +44,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
         ),
         UIGenerator.label("POLL QUESTION"),
         SizedBox(
-          height: 11,
+          height: UIGenerator.toUnits(11),
         ),
         Form(
           key: _formKey,
@@ -58,8 +56,9 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(4.0)),
                     color: Color.fromRGBO(243, 243, 247, 1)),
-                padding: EdgeInsets.only(top: 8, left: 17, right: 17),
+                padding: EdgeInsets.only(top: UIGenerator.toUnits(8), left: UIGenerator.toUnits(17), right: UIGenerator.toUnits(17)),
                 child: TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
                   // initialValue: "Arthur F",
                   // autofocus: true,
                   style: UIGenerator.textFeildTextStyle(),
@@ -80,7 +79,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
           ),
         ),
         SizedBox(
-          height: 45,
+          height: UIGenerator.toUnits(45),
         ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +113,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
                       });
             })),          ],
         ),
-        SizedBox(height: 45,),
+        SizedBox(height: UIGenerator.toUnits(45),),
         Row(
           children: <Widget>[
             UIGenerator.buttonOutlined("Cancel", this.widget.creationCallBack),
@@ -151,7 +150,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
     List<Widget> content = [
       UIGenerator.label(label),
       SizedBox(
-        height: 12,
+        height: UIGenerator.toUnits(12),
       )
     ];
 
@@ -166,7 +165,7 @@ class _CreatePollScreenState extends State<CreatePollScreen> {
             activeColor: Colors.black,
           ),
           SizedBox(
-            width: 5,
+            width: UIGenerator.toUnits(5),
           ),
           UIGenerator.coloredText(i["label"],
               i["value"] == groupValue ? Colors.black : Colors.black54)

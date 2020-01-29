@@ -24,14 +24,18 @@ class _MainPageState extends State<MainPage> {
         child: Row(
       children: <Widget>[
         Expanded(child: leftColumn()),
-        SizedBox(width: 500, child: rightColumn())
+        SizedBox(width: UIGenerator.toUnits(500), child: rightColumn())
       ],
     ));
   }
 
   Widget leftColumn() {
     return Padding(
-      padding: EdgeInsets.only(top: 40, left: 115, bottom: 40, right: 115),
+      padding: EdgeInsets.only(
+          top: UIGenerator.toUnits(40),
+          left: UIGenerator.toUnits(115),
+          bottom: UIGenerator.toUnits(40),
+          right: UIGenerator.toUnits(115)),
       child: Column(
         // mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -72,15 +76,14 @@ class _MainPageState extends State<MainPage> {
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 100),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              UIGenerator.subtitle(
-                  "Here's the last 10 polls that occured"),
+              UIGenerator.subtitle("Here's the last 10 polls that occured"),
               SizedBox(
-                height: 20,
+                height: UIGenerator.toUnits(20),
               ),
               UIGenerator.heading("Recent Polls")
             ],
@@ -92,7 +95,11 @@ class _MainPageState extends State<MainPage> {
 
   Widget rightColumn() {
     return Padding(
-        padding: EdgeInsets.only(top: 40, left: 45, bottom: 40, right: 70),
+        padding: EdgeInsets.only(
+            top: UIGenerator.toUnits(40),
+            left: UIGenerator.toUnits(45),
+            bottom: UIGenerator.toUnits(40),
+            right: UIGenerator.toUnits(70)),
         child: Column(
           // mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -102,49 +109,59 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget menu() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[newButton()],
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+      StreamBuilder(
+          stream: this.widget.database.getActivePollId(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData && snapshot.data == "none") {
+            
+                return newButton(true);
+              
+            }else{
+               return newButton(false);
+            }
+          }),
+    ]);
   }
 
-  Widget newButton() {
+  Widget newButton(bool active) {
     return InkWell(
       child: Row(
         children: <Widget>[
           Icon(
             Icons.add_circle,
-            size: 20,
-            color: Colors.black,
+            size: UIGenerator.toUnits(20),
+            color: active ? Colors.black : UIGenerator.grey,
           ),
           SizedBox(
             width: 7,
           ),
-          UIGenerator.normalText("New Poll")
+          active ? UIGenerator.normalText("New Poll") : UIGenerator.fadedNormalText("New Poll")
         ],
       ),
-      onTap: () {
+      onTap: active ? () {
         setState(() {
           creatingPoll = true;
         });
-      },
+      } : (){},
     );
   }
 
   Widget participants() {
     return StreamBuilder(
       stream: this.widget.database.getActivePollId(),
-      initialData: "none" ,
-      builder: (BuildContext context, AsyncSnapshot snapshot){
+      initialData: "none",
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
         print("-  - - ");
         print(snapshot.data);
-        return ParticipantsView(snapshot.data == "none" ? null : snapshot.data, this.widget.user.id, this.widget.database);
+        return ParticipantsView(snapshot.data == "none" ? null : snapshot.data,
+            this.widget.user.id, this.widget.database);
       },
     );
   }
 
   Widget createPollScreen() {
-    return CreatePollScreen(this.widget.user, this.widget.database, (){
+    return CreatePollScreen(this.widget.user, this.widget.database, () {
       setState(() {
         creatingPoll = false;
       });
@@ -155,28 +172,32 @@ class _MainPageState extends State<MainPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
-       crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 100),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              UIGenerator.subtitle(
-                  "Action invalid"),
+              UIGenerator.subtitle("Action invalid"),
               SizedBox(
-                height: 20,
+                height: UIGenerator.toUnits(20),
               ),
               UIGenerator.heading("Poll Already in Session")
             ],
           ),
         ),
-        UIGenerator.label("You cannot create a new poll because one is already in session."),
-        SizedBox(height: 45,),
-        UIGenerator.button("Continue", (){setState(() {
-          creatingPoll = false;
-        });})
+        UIGenerator.label(
+            "You cannot create a new poll because one is already in session."),
+        SizedBox(
+          height: UIGenerator.toUnits(45),
+        ),
+        UIGenerator.button("Continue", () {
+          setState(() {
+            creatingPoll = false;
+          });
+        })
       ],
     );
   }

@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 
 void main() async {
   DatabaseInterface database =
-      new DatabaseInterface(organization: "dev_organization");
+      new DatabaseInterface(organization: "dev_org_two");
 
   // UserSnapshot credentials = new UserSnapshot(name: "Arthur F");
   // UserP signedInUser = await database.signIn(credentials);

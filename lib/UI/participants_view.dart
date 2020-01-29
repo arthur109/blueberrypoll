@@ -57,7 +57,7 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(top: 100, bottom: 26),
+                      padding: EdgeInsets.only(top: UIGenerator.toUnits(100), bottom: UIGenerator.toUnits(26)),
                       child: UIGenerator.subtitle(
                           "Participants (" + answers.length.toString() + ")"),
                     ),
@@ -67,7 +67,7 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                         itemCount: answers.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
@@ -170,7 +170,7 @@ class _ParticipantsViewState extends State<ParticipantsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 100, bottom: 26),
+              padding: EdgeInsets.only(top: UIGenerator.toUnits(100), bottom: UIGenerator.toUnits(26)),
               child: UIGenerator.subtitle(
                   "Participants (" + onlineUsers.length.toString() + ")"),
             ),
@@ -180,7 +180,7 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                 itemCount: onlineUsers.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       // mainAxisAlignment: Mai,

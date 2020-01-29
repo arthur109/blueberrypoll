@@ -8,7 +8,11 @@ class UIGenerator {
   static Color orange = Color.fromRGBO(250, 160, 138, 1);
   static Color grey = Color.fromRGBO(190, 190, 203, 1);
   static Color lightGrey = Color.fromARGB(255, 246, 246, 250);
+  static double width;
 
+  static double toUnits(double value){
+    return ((value/1920)*width).roundToDouble();
+  }
   static Widget logo() {
     return Row(
       children: <Widget>[
@@ -17,7 +21,7 @@ class UIGenerator {
           style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w500,
-              fontSize: 24,
+              fontSize: UIGenerator.toUnits(24),
               fontStyle: FontStyle.normal,
               fontFamily: 'MontserratAlternates'),
         ),
@@ -26,7 +30,7 @@ class UIGenerator {
           style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w900,
-              fontSize: 24,
+              fontSize: UIGenerator.toUnits(24),
               fontStyle: FontStyle.normal,
               fontFamily: 'MontserratAlternates'),
         ),
@@ -40,7 +44,7 @@ class UIGenerator {
       style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.w900,
-          fontSize: 42,
+          fontSize: UIGenerator.toUnits(42),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
@@ -52,7 +56,7 @@ class UIGenerator {
       style: TextStyle(
           color: Colors.black,
           // fontWeight: FontWeight.w900,
-          fontSize: 18,
+          fontSize: UIGenerator.toUnits(18),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
@@ -64,7 +68,7 @@ class UIGenerator {
         // mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[disabled ? UIGenerator.fadedNormalText(current.toString()) : UIGenerator.normalText(current.toString()), SizedBox(width: 8), Expanded(child: UIGenerator.progressBar(current, total, color, disabled, showAmount: false))],);
+        children: <Widget>[disabled ? UIGenerator.fadedNormalText(current.toString()) : UIGenerator.normalText(current.toString()), SizedBox(width: UIGenerator.toUnits(8)), Expanded(child: UIGenerator.progressBar(current, total, color, disabled, showAmount: false))],);
     }
     if(disabled){
       color = Color.fromRGBO(190, 190, 203, 1);
@@ -75,15 +79,15 @@ class UIGenerator {
             Expanded(
                 flex: current,
                 child: Container(
-                    width: 15,
+                    width: UIGenerator.toUnits(15),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                      borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(100))),
                       color: color,
                     ))),
             Expanded(
                 flex: total - current,
                 child: Container(
-                  width: 15,
+                  width: UIGenerator.toUnits(15),
                 ))
           ],
         ),
@@ -100,7 +104,7 @@ class UIGenerator {
       style: TextStyle(
           color: Colors.black54,
           // fontWeight: FontWeight.w900,
-          fontSize: 18,
+          fontSize: UIGenerator.toUnits(18),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
@@ -112,7 +116,7 @@ class UIGenerator {
       style: TextStyle(
           color: color,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: UIGenerator.toUnits(20),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
@@ -124,7 +128,7 @@ class UIGenerator {
       style: TextStyle(
           color: Color.fromRGBO(144, 144, 157, 1),
           fontWeight: FontWeight.bold,
-          fontSize: 22,
+          fontSize: UIGenerator.toUnits(22),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
@@ -134,7 +138,7 @@ class UIGenerator {
     return TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.normal,
-        fontSize: 26,
+        fontSize: UIGenerator.toUnits(26),
         fontStyle: FontStyle.normal,
         fontFamily: 'Muli');
   }
@@ -145,8 +149,8 @@ class UIGenerator {
       style: TextStyle(
           color: Color.fromRGBO(91, 91, 111, 1),
           fontWeight: FontWeight.bold,
-          fontSize: 15,
-          letterSpacing: 2,
+          fontSize: UIGenerator.toUnits(15),
+          letterSpacing: UIGenerator.toUnits(2),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
     );
@@ -158,17 +162,18 @@ class UIGenerator {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Cupertino.CupertinoActivityIndicator(),
+            Cupertino.CupertinoActivityIndicator(
+            ),
             SizedBox(
-              height: 12,
+              height: UIGenerator.toUnits(12),
             ),
             Text(
               message,
               style: TextStyle(
                   color: Color.fromRGBO(91, 91, 111, 0.6),
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  letterSpacing: 2,
+                  fontSize: UIGenerator.toUnits(15),
+                  letterSpacing: UIGenerator.toUnits(2),
                   fontStyle: FontStyle.normal,
                   fontFamily: 'Muli'),
             ),
@@ -185,10 +190,10 @@ class UIGenerator {
     return InkWell(
         onTap: func,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(14), horizontal: UIGenerator.toUnits(30)),
           decoration: BoxDecoration(
               color: UIGenerator.orange,
-              borderRadius: BorderRadius.all(Radius.circular(6))),
+              borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
           child: coloredText(text, Colors.white),
         ));
   }
@@ -197,11 +202,11 @@ class UIGenerator {
     return InkWell(
         onTap: func,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(14), horizontal: UIGenerator.toUnits(30)),
           decoration: BoxDecoration(
-            border: Border.all(color: UIGenerator.orange, width: 2),
+            border: Border.all(color: UIGenerator.orange, width: UIGenerator.toUnits(2)),
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(6))),
+              borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
           child: coloredText(text, UIGenerator.orange),
         ));
   }
@@ -226,4 +231,6 @@ class UIGenerator {
       5 <= value ? highlighted : notHighlighted
     ],);
   }
+
+  
 }

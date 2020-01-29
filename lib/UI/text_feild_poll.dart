@@ -32,9 +32,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
 
   @override
   Widget build(BuildContext context) {
-    return this.widget.poll.isCreator(this.widget.user.id)
-        ? creatorView()
-        : participantView();
+    return participantView();
   }
 
   Widget creatorView() {
@@ -94,14 +92,14 @@ class _TextFeildPollState extends State<TextFeildPoll> {
         shrinkWrap: true,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 100),
+          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               UIGenerator.subtitle("Currently polling"),
               SizedBox(
-                height: 20,
+                height: UIGenerator.toUnits(20),
               ),
               UIGenerator.heading(this.widget.poll.question)
             ],
@@ -142,7 +140,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
           ),
         ),
         SizedBox(
-          height: 20,
+          height: UIGenerator.toUnits(20),
         ),
         UIGenerator.button("Submit Answer", submitAnswer)
       ],
@@ -167,7 +165,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
         shrinkWrap: true,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 100),
+            padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -176,7 +174,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
                     ? "Viewing results for the poll"
                     : "Waiting for results to be revealed for the poll"),
                 SizedBox(
-                  height: 20,
+                  height: UIGenerator.toUnits(20),
                 ),
                 UIGenerator.heading(this.widget.poll.question)
               ],
@@ -186,7 +184,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
               summary.totalCount.toString() +
               " PARTICIPANTS"),
           SizedBox(
-            height: 20,
+            height: UIGenerator.toUnits(20),
           ),
           Row(
             children: <Widget>[
@@ -198,13 +196,13 @@ class _TextFeildPollState extends State<TextFeildPoll> {
                       ? UIGenerator.normalText("Submitted Answer")
                       : UIGenerator.fadedNormalText("Submitted Answer"),
                   SizedBox(
-                    height: 35,
+                    height: UIGenerator.toUnits(35),
                   ),
                   UIGenerator.fadedNormalText("Still Answering...")
                 ],
               ),
               SizedBox(
-                width: 36,
+                width: UIGenerator.toUnits(36),
               ),
               Expanded(
                 child: Column(
@@ -216,7 +214,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
                         false,
                         showAmount: true),
                     SizedBox(
-                      height: 35,
+                      height: UIGenerator.toUnits(35),
                     ),
                     UIGenerator.progressBar(summary.pendingCount,
                         summary.totalCount, UIGenerator.yellow, true,
@@ -227,7 +225,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
             ],
           ),
           SizedBox(
-            height: 75,
+            height: UIGenerator.toUnits(75),
           ),
           summary.hasResultVisibilityPrivilege
               ? SummaryButtonBar(summary.isActive, summary.areResultsVisible)
@@ -252,7 +250,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
                 this.widget.poll.setResultVisibility(true);
               }),
         SizedBox(
-          width: 20,
+          width: UIGenerator.toUnits(20),
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
           this.widget.poll.clearAnswers().then((data){
