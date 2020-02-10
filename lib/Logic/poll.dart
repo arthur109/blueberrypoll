@@ -128,6 +128,23 @@ class Poll {
     
   }
 
+  Future<PollSnapshot> getSnapshot() async {
+
+    Map pollMap = (await this.database.entryPoint.child(DatabaseInterface.POLLS_NODE +"/" + this.id).once("value")).snapshot.val();
+
+    return PollSnapshot(
+          id: this.id,
+          question: pollMap[Poll.QUESTION_KEY],
+          answerType: Poll.answerTypeFromString(pollMap[Poll.ANSWER_TYPE_KEY]),
+          isAnonymous: pollMap[Poll.IS_ANONYMOUS_KEY],
+          timestamp: pollMap[Poll.TIMESTAMP_KEY],
+          creatorId: pollMap[Poll.CREATOR_ID_KEY],
+          answers:
+              Poll.answerMapListToAnswerObjectList(pollMap[Poll.ANSWERS_KEY]),
+          areResultsVisible: pollMap[Poll.ARE_RESULTS_VISIBLE_KEY],
+          isActive: null);
+  }
+
   Stream<bool> isActiveStream(){
     return database.getActivePollId().map((data){return (data == this.id);});
   }
@@ -161,6 +178,9 @@ class Poll {
 
   static List<Answer> answerMapListToAnswerObjectList(Map answers) {
     List<Answer> temp = new List();
+    if(answers == null){
+      return temp;
+    }
     for (String key in answers.keys) {
       Map i = answers[key];
       temp.add(answerFromMap(i));

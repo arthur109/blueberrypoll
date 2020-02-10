@@ -53,57 +53,60 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                 bool showNames = !info.isAnonymous;
                 List<Answer> answers = info.answers;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: UIGenerator.toUnits(100), bottom: UIGenerator.toUnits(26)),
-                      child: UIGenerator.subtitle(
-                          "Participants (" + answers.length.toString() + ")"),
-                    ),
-                    Expanded(
-                      child: Cupertino.ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: answers.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              // mainAxisAlignment: Mai,
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 3,
-                                  child: showNames
-                                      ? StreamBuilder(
-                                          stream: UserP(
-                                                  id: answers[index].respondantId,
-                                                  database: this.widget.database)
-                                              .name,
-                                          initialData: "...",
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot snapshot) {
-                                            return Container(
-                                              child: UIGenerator.normalText(
-                                                  snapshot.data),
-                                            );
-                                          },
-                                        )
-                                      : UIGenerator.normalText("Arthur Fakhreddine"),
-                                ),
-                                Expanded(
-                                    flex: 4,
-                                    child: 
-                                    answers[index].pending ?  UIGenerator.fadedNormalText("answering poll...") : showResults ? displayAnswer(answers[index]) : UIGenerator.fadedNormalText("answer hidden")),
-                              ],
-                            ),
-                          );
-                          // Text("hello");
-                        },
+                return Expanded(
+                                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: UIGenerator.toUnits(100), bottom: UIGenerator.toUnits(26)),
+                        child: UIGenerator.subtitle(
+                            "Participants (" + answers.length.toString() + ")"),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Cupertino.ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: answers.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                // mainAxisAlignment: Mai,
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 3,
+                                    child: showNames
+                                        ? StreamBuilder(
+                                            stream: UserP(
+                                                    id: answers[index].respondantId,
+                                                    database: this.widget.database)
+                                                .name,
+                                            initialData: "...",
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
+                                              return Container(
+                                                child: UIGenerator.normalText(
+                                                    snapshot.data),
+                                              );
+                                            },
+                                          )
+                                        : UIGenerator.normalText("Anonymous"),
+                                  ),
+                                  Expanded(
+                                      flex: 4,
+                                      child: 
+                                      answers[index].pending ?  UIGenerator.fadedNormalText("answering poll...") : showResults ? displayAnswer(answers[index]) : UIGenerator.fadedNormalText("answer hidden")),
+                                ],
+                              ),
+                            );
+                            // Text("hello");
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               } else {
                 return UIGenerator.loading(message: "fetching answers b");

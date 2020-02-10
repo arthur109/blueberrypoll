@@ -43,11 +43,8 @@ class UserP {
     this.name = this
         .database
         .entryPoint
-        .child(DatabaseInterface.USERS_NODE +
-            "/" +
-            this.id +
-            "/" +
-            UserP.NAME_KEY)
+        .child(
+            DatabaseInterface.USERS_NODE + "/" + this.id + "/" + UserP.NAME_KEY)
         .onValue
         .map((QueryEvent data) {
       return data.snapshot.val();
@@ -65,5 +62,19 @@ class UserP {
         .map((QueryEvent data) {
       return data.snapshot.val();
     });
+  }
+
+  Future<String> getName() async {
+    return (await this
+            .database
+            .entryPoint
+            .child(DatabaseInterface.USERS_NODE +
+                "/" +
+                this.id +
+                "/" +
+                UserP.NAME_KEY)
+            .once("value"))
+        .snapshot
+        .val();
   }
 }

@@ -142,7 +142,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
         SizedBox(
           height: UIGenerator.toUnits(20),
         ),
-        UIGenerator.button("Submit Answer", submitAnswer)
+        Align(child: UIGenerator.button("Submit Answer", submitAnswer), alignment: Alignment.centerLeft,)
       ],
     );
   }

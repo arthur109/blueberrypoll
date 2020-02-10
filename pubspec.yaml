@@ -23,6 +23,7 @@ dependencies:
   firebase: ^7.2.0
   firebase_analytics: any
   firebase_database: ^3.1.1
+  timeago: ^2.0.25
   flutter:
     sdk: flutter
 

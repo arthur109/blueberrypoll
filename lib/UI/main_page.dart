@@ -1,5 +1,7 @@
 import 'package:blueberrypoll/Data/database_interface.dart';
+import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:blueberrypoll/Logic/user.dart';
+import 'package:blueberrypoll/UI/historic_poll.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/poll_view.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
@@ -9,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'create_poll.dart';
 
 class MainPage extends StatefulWidget {
+    static final navKey = new GlobalKey<NavigatorState>();
+
   DatabaseInterface database;
   UserP user;
   MainPage(this.database, this.user);
@@ -70,26 +74,52 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget lastTenPolls() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              UIGenerator.subtitle("Here's the last 10 polls that occured"),
-              SizedBox(
-                height: UIGenerator.toUnits(20),
-              ),
-              UIGenerator.heading("Recent Polls")
-            ],
-          ),
-        )
-      ],
+    return FutureBuilder(
+      future: this.widget.database.lastTenPolls(),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+        if (snapshot.hasData) {
+          List<String> keys = List.from(snapshot.data.keys.toList().reversed);
+          return ListView.builder(
+            itemCount: keys.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: UIGenerator.toUnits(100)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                UIGenerator.subtitle(
+                                    "Here's the last 10 polls that occured"),
+                                SizedBox(
+                                  height: UIGenerator.toUnits(20),
+                                ),
+                                UIGenerator.heading("Recent Polls"),
+                              ]),
+                        ],
+                      ),
+                    )
+                  ],
+                );
+              }
+              return HistoricPoll(
+                  keys[index - 1], this.widget.user.id, this.widget.database);
+            },
+          );
+        } else {
+          return UIGenerator.loading(message: "getting history");
+        }
+      },
     );
   }
 
@@ -113,15 +143,53 @@ class _MainPageState extends State<MainPage> {
       StreamBuilder(
           stream: this.widget.database.getActivePollId(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData && snapshot.data == "none") {
-            
+            if (snapshot.hasData) {
+              if (snapshot.data == "none") {
                 return newButton(true);
-              
-            }else{
-               return newButton(false);
+              } else {
+                return FutureBuilder(
+                  future:
+                      Poll(id: snapshot.data, database: this.widget.database)
+                          .getSnapshot(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<PollSnapshot> snapshot) {
+                    if (snapshot.hasData) {
+                      if ((DateTime.now().millisecondsSinceEpoch -
+                              snapshot.data.timestamp) >
+                          60000 * 10) {
+                        return endPollButton();
+                      }
+                    }
+                    return newButton(false);
+                  },
+                );
+              }
+            } else {
+              return newButton(false);
             }
           }),
     ]);
+  }
+
+  Widget endPollButton() {
+    return InkWell(
+      child: Row(
+        children: <Widget>[
+          Icon(
+            Icons.archive,
+            size: UIGenerator.toUnits(30),
+            color: UIGenerator.red,
+          ),
+          SizedBox(
+            width: 7,
+          ),
+          UIGenerator.coloredBoldText("End Current Poll", UIGenerator.red)
+        ],
+      ),
+      onTap: () {
+        this.widget.database.endCurrentPoll();
+      },
+    );
   }
 
   Widget newButton(bool active) {
@@ -136,14 +204,18 @@ class _MainPageState extends State<MainPage> {
           SizedBox(
             width: 7,
           ),
-          active ? UIGenerator.normalText("New Poll") : UIGenerator.fadedNormalText("New Poll")
+          active
+              ? UIGenerator.normalText("New Poll")
+              : UIGenerator.fadedNormalText("New Poll")
         ],
       ),
-      onTap: active ? () {
-        setState(() {
-          creatingPoll = true;
-        });
-      } : (){},
+      onTap: active
+          ? () {
+              setState(() {
+                creatingPoll = true;
+              });
+            }
+          : () {},
     );
   }
 

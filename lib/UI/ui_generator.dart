@@ -198,6 +198,30 @@ class UIGenerator {
         ));
   }
 
+  static Widget coloredBoldText(String text, Color color) {
+    return Text(
+      text,
+      style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w800,
+          fontSize: UIGenerator.toUnits(22),
+          fontStyle: FontStyle.normal,
+          fontFamily: 'Muli'),
+    );
+  }
+
+  static Widget coloredThinText(String text, Color color) {
+    return Text(
+      text,
+      style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.normal,
+          fontSize: UIGenerator.toUnits(18),
+          fontStyle: FontStyle.normal,
+          fontFamily: 'Muli'),
+    );
+  }
+
   static Widget buttonOutlined(String text, Function func) {
     return InkWell(
         onTap: func,
