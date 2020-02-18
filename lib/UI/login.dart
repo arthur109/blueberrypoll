@@ -87,11 +87,14 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Image.network(
-                  _currentUser.photoUrl,
-                  width: UIGenerator.toUnits(64),
-                  height: UIGenerator.toUnits(64),
-                ),
+                ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(UIGenerator.toUnits(500)),
+                    child: Image.network(
+                      _currentUser.photoUrl,
+                      width: UIGenerator.toUnits(64),
+                      height: UIGenerator.toUnits(64),
+                    )),
                 SizedBox(
                   width: UIGenerator.toUnits(32),
                 ),
