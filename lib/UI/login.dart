@@ -56,7 +56,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget signingInWithGoogle() {
-    return UIGenerator.loading(message: "signing in with google");
+    return Material(
+        child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          UIGenerator.logo(),
+          SizedBox(height: UIGenerator.toUnits(32)),
+          UIGenerator.button("Sign in with Google", () {
+            print("attempting siging in");
+            print("siging out");
+            _googleSignIn.signOut().then((value) {
+              print("signed out - now signing in");
+              _googleSignIn.signIn().then((value) => print(value));
+            });
+          })
+        ],
+      ),
+    ));
   }
 
   Widget confirmAccount() {
@@ -89,13 +106,14 @@ class _LoginPageState extends State<LoginPage> {
               height: UIGenerator.toUnits(32),
             ),
             // Align(alignment: Alignment.center, child: UIGenerator.button("Continue", login)),
-                       UIGenerator.button("Continue", login),
+            UIGenerator.button("Continue", login),
 
             SizedBox(
               height: UIGenerator.toUnits(16),
             ),
             InkWell(
-              child: UIGenerator.coloredThinText("or switch account", UIGenerator.grey),
+              child: UIGenerator.coloredThinText(
+                  "or switch account", UIGenerator.grey),
               onTap: () {
                 _googleSignIn.signOut().then((value) {
                   _googleSignIn.signIn();
@@ -143,11 +161,15 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     _googleSignIn.signInSilently().then((GoogleSignInAccount user) {
-      if (user == null) {
+      if (user == null || user.id == null) {
         print("no prev user found");
-        _googleSignIn.signIn();
+        // _googleSignIn.signIn();
       } else {
         print("prev user found");
+        print("User ---");
+        print(user);
+        print("Current User ---");
+        print(_currentUser);
       }
     });
 

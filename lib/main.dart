@@ -20,12 +20,6 @@ void main() async {
   runApp(CupertinoApp(
     navigatorKey:MainPage.navKey,
     debugShowCheckedModeBanner: false,
-    // theme: ThemeData(
-    //   // Define the default Brightness and Colors
-    //   brightness: Brightness.light,
-    //   primaryColor: Colors.black,
-    //   accentColor: Colors.orangeAccent,
-    // ),
     home: LoginPage(database)
   ));
 }

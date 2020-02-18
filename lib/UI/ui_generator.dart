@@ -15,6 +15,7 @@ class UIGenerator {
   }
   static Widget logo() {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(
           "blueberry",
