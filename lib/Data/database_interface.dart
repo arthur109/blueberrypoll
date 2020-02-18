@@ -28,36 +28,45 @@ class DatabaseInterface {
     entryPoint = server.ref(rootNode);
   }
 
+
   Future<UserP> signIn(UserSnapshot credentials) async {
-    print("--SIGN IN--");
-    Map userFound = (await this
-            .entryPoint
-            .child(DatabaseInterface.USERS_NODE)
-            .orderByChild(UserP.NAME_KEY)
-            .equalTo(credentials.name)
-            .once("value"))
-        .snapshot
-        .val();
-    print("user found: " + userFound.toString());
-
-    if (userFound != null) {
-      print("user found");
-      return UserP(id: userFound.keys.first, database: this);
-    }
-    return createUser(credentials);
-  }
-
-  Future<UserP> createUser(UserSnapshot credentials) async {
-    print("-- CREATE USER --");
-    String newUserID =
-        this.entryPoint.child(DatabaseInterface.USERS_NODE).push().key;
-    print("id found: " + newUserID);
     await this
         .entryPoint
-        .child(DatabaseInterface.USERS_NODE + "/" + newUserID)
+        .child(DatabaseInterface.USERS_NODE + "/" + credentials.id)
         .set(credentials.toMap());
-    return UserP(id: newUserID, database: this);
+    return UserP(id: credentials.id, database: this);
   }
+
+  // Future<UserP> signIn(UserSnapshot credentials) async {
+  //   print("--SIGN IN--");
+  //   Map userFound = (await this
+  //           .entryPoint
+  //           .child(DatabaseInterface.USERS_NODE)
+  //           .orderByChild(UserP.NAME_KEY)
+  //           .equalTo(credentials.name)
+  //           .once("value"))
+  //       .snapshot
+  //       .val();
+  //   print("user found: " + userFound.toString());
+
+  //   if (userFound != null) {
+  //     print("user found");
+  //     return UserP(id: userFound.keys.first, database: this);
+  //   }
+  //   return createUser(credentials);
+  // }
+
+  // Future<UserP> createUser(UserSnapshot credentials) async {
+  //   print("-- CREATE USER --");
+  //   String newUserID =
+  //       this.entryPoint.child(DatabaseInterface.USERS_NODE).push().key;
+  //   print("id found: " + newUserID);
+  //   await this
+  //       .entryPoint
+  //       .child(DatabaseInterface.USERS_NODE + "/" + newUserID)
+  //       .set(credentials.toMap());
+  //   return UserP(id: newUserID, database: this);
+  // }
 
   void setOnlineStatusHooks(UserP user) {
     DatabaseReference ref = this.entryPoint.child(
@@ -82,7 +91,11 @@ class DatabaseInterface {
   }
 
   Future<Map> lastTenPolls() async {
-    return ((await this.entryPoint.child(DatabaseInterface.POLLS_NODE).limitToFirst(10).once("value"))).snapshot.val();
+    Map answer = ((await this.entryPoint.child(DatabaseInterface.POLLS_NODE).limitToFirst(10).once("value"))).snapshot.val();
+    if(answer == null){
+      return {};
+    }
+    return answer;
   }
 
   Stream getActivePollId() {

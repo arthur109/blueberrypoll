@@ -79,6 +79,9 @@ class _MainPageState extends State<MainPage> {
       builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
         if (snapshot.hasData) {
           List<String> keys = List.from(snapshot.data.keys.toList().reversed);
+          if(keys.length == 0){
+            return Center(child: UIGenerator.coloredBoldText("No polls have been created.", UIGenerator.grey));
+          }
           return ListView.builder(
             itemCount: keys.length + 1,
             itemBuilder: (BuildContext context, int index) {

@@ -24,6 +24,7 @@ dependencies:
   firebase_analytics: any
   firebase_database: ^3.1.1
   timeago: ^2.0.25
+  google_sign_in: ^4.1.0
   flutter:
     sdk: flutter
 
