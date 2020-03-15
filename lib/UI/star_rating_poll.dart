@@ -222,6 +222,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
               ),
               Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     UIGenerator.progressBar(
                         canViewResults ? summary.fiveCount : 0,

@@ -6,6 +6,7 @@ import 'package:blueberrypoll/Logic/text_feild_answer.dart';
 import 'package:blueberrypoll/Logic/user.dart';
 import 'package:blueberrypoll/Logic/yes_no_answer.dart';
 import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
+import 'package:blueberrypoll/UI/historic_poll_info.dart';
 import 'package:blueberrypoll/UI/main_page.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/poll_view.dart';
@@ -18,7 +19,8 @@ class HistoricPoll extends StatefulWidget {
   String pollId;
   DatabaseInterface database;
   String userId;
-  HistoricPoll(this.pollId, this.userId, this.database);
+  bool isAdmin;
+  HistoricPoll(this.pollId, this.userId, this.database, this.isAdmin);
 
   @override
   _HistoricPollState createState() => _HistoricPollState();
@@ -26,16 +28,18 @@ class HistoricPoll extends StatefulWidget {
 
 class _HistoricPollState extends State<HistoricPoll> {
   bool highlighted = false;
-  Future<PollSnapshot> poll;
+  bool deleted = false;
+  Poll poll;
+  Stream<PollSnapshot> pollSnapshotStream;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: FutureBuilder(
-          future: poll,
+    return deleted ? SizedBox(width: 0, height: 0,):InkWell(
+      child: StreamBuilder(
+          stream: pollSnapshotStream,
           builder:
               (BuildContext context, AsyncSnapshot<PollSnapshot> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+            if (snapshot.hasData) {
               String timeText = timeago.format(
                   DateTime.fromMillisecondsSinceEpoch(snapshot.data.timestamp));
               return MouseRegion(
@@ -60,8 +64,26 @@ class _HistoricPollState extends State<HistoricPoll> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            UIGenerator.coloredBoldText(snapshot.data.question,
-                                highlighted ? Colors.white : Colors.black),
+                            Cupertino.Row(
+                              children: <Cupertino.Widget>[
+                                (snapshot.data.isHidden == true)
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                            right: UIGenerator.toUnits(8)),
+                                        child: Icon(
+                                          Icons.visibility_off,
+                                          color: highlighted
+                                              ? Colors.white
+                                              : Colors.black,
+                                          size: UIGenerator.toUnits(20),
+                                        ),
+                                      )
+                                    : Container(),
+                                UIGenerator.coloredBoldText(
+                                    snapshot.data.question,
+                                    highlighted ? Colors.white : Colors.black),
+                              ],
+                            ),
                             SizedBox(
                               height: UIGenerator.toUnits(7),
                             ),
@@ -82,7 +104,8 @@ class _HistoricPollState extends State<HistoricPoll> {
                       )));
             } else {
               return Container(
-                padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(26)),
+                padding:
+                    EdgeInsets.symmetric(vertical: UIGenerator.toUnits(26)),
                 child: UIGenerator.loading(),
                 color: UIGenerator.lightGrey,
               );
@@ -92,77 +115,22 @@ class _HistoricPollState extends State<HistoricPoll> {
     );
   }
 
-  void showPollInfo() {
+  void showPollInfo() async {
     final context = MainPage.navKey.currentState.overlay.context;
-    
-    Cupertino.showCupertinoDialog<Null>(
-    context: context,
-    // barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return Material(
-        child: Row(
-      children: <Widget>[
-        Expanded(child: leftColumn()),
-        SizedBox(width: UIGenerator.toUnits(500), child: rightColumn())
-      ],
-    ));
 
-      //  return Cupertino.CupertinoAlertDialog<NUll(actions: <Widget>[],)
-        
-    },
-  );
-  }
-
-
-  Widget leftColumn() {
-    return Padding(
-      padding: EdgeInsets.only(
-          top: UIGenerator.toUnits(40),
-          left: UIGenerator.toUnits(115),
-          bottom: UIGenerator.toUnits(40),
-          right: UIGenerator.toUnits(115)),
-      child: Column(
-        // mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          exitButton(),
-          // UIGenerator.coloredText("VIEWING HISTORIC POLL", Colors.black),
-          Expanded(child: PollView(this.widget.pollId, UserP(id: this.widget.userId, database: this.widget.database), this.widget.database)),
-        ],
-      ),
-    );
-  }
-
-  Widget rightColumn() {
-    return Padding(
-        padding: EdgeInsets.only(
-            top: UIGenerator.toUnits(40),
-            left: UIGenerator.toUnits(45),
-            bottom: UIGenerator.toUnits(40),
-            right: UIGenerator.toUnits(70)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[ 
-           
-            
-            ParticipantsView(this.widget.pollId,
-            this.widget.userId, this.widget.database)],
-        ));
-  }
-
-  Widget exitButton(){
-    return InkWell(
-      onTap:(){ Navigator.of(context).pop();},
-      child: Container(
-          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(7), horizontal: UIGenerator.toUnits(10)),
-          decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
-          child:Row(mainAxisSize: MainAxisSize.min, children: <Widget>[Icon(Icons.arrow_back, color: Colors.white, size: UIGenerator.toUnits(20),), SizedBox(width: UIGenerator.toUnits(6),), UIGenerator.coloredText("Exit Summary View", Colors.white)],),
-        ),);
+    await Cupertino.showCupertinoDialog<bool>(
+      context: context,
+      // barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return HistoricPollInfoView(this.widget.pollId, this.widget.userId,
+            this.widget.database, this.widget.isAdmin);
+        //  return Cupertino.CupertinoAlertDialog<NUll(actions: <Widget>[],)
+      },
+    ).then((bool wasItdeleted){
+      setState(() {
+        deleted = wasItdeleted;
+      });
+    });
   }
 
   Future<String> getSubtitle(PollSnapshot snapshot) async {
@@ -191,7 +159,11 @@ class _HistoricPollState extends State<HistoricPoll> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    poll = new Poll(id: this.widget.pollId, database: this.widget.database)
-        .getSnapshot();
+    poll = new Poll(id: this.widget.pollId, database: this.widget.database);
+
+    pollSnapshotStream = poll.allInfoStream.asBroadcastStream();
+    pollSnapshotStream.listen((PollSnapshot event) {
+      print("snapshot updated: " + event.question);
+    });
   }
 }

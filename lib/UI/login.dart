@@ -77,6 +77,29 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget confirmAccount() {
+    return FutureBuilder(
+      future: this.widget.database.getEmailDomains(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data.contains(_currentUser.email.split("@")[1])) {
+            return authorizedLogin();
+          } else {
+            return unAuthorizedLogin();
+          }
+        } else {
+          return UIGenerator.loading(message: "authorizing login");
+        }
+      },
+    );
+  }
+
+  void switchAccounts() {
+    _googleSignIn.signOut().then((value) {
+      _googleSignIn.signIn();
+    });
+  }
+
+  Widget authorizedLogin() {
     return Center(
       child: Material(
         color: Colors.white,
@@ -87,17 +110,21 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(UIGenerator.toUnits(500)),
-                    child: Image.network(
-                      _currentUser.photoUrl,
-                      width: UIGenerator.toUnits(64),
-                      height: UIGenerator.toUnits(64),
-                    )),
-                SizedBox(
-                  width: UIGenerator.toUnits(32),
-                ),
+                (_currentUser.photoUrl != null)
+                    ? ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(UIGenerator.toUnits(500)),
+                        child: Image.network(
+                          _currentUser.photoUrl,
+                          width: UIGenerator.toUnits(64),
+                          height: UIGenerator.toUnits(64),
+                        ))
+                    : Container(),
+                (_currentUser.photoUrl != null)
+                    ? SizedBox(
+                        width: UIGenerator.toUnits(32),
+                      )
+                    : Container(),
                 UIGenerator.heading(_currentUser.displayName),
               ],
             ),
@@ -115,14 +142,36 @@ class _LoginPageState extends State<LoginPage> {
               height: UIGenerator.toUnits(16),
             ),
             InkWell(
-              child: UIGenerator.coloredThinText(
-                  "or switch account", UIGenerator.grey),
-              onTap: () {
-                _googleSignIn.signOut().then((value) {
-                  _googleSignIn.signIn();
-                });
-              },
-            )
+                child: UIGenerator.coloredThinText(
+                    "or switch account", UIGenerator.grey),
+                onTap: switchAccounts)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget unAuthorizedLogin() {
+    return Center(
+      child: Material(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            UIGenerator.heading(_currentUser.email),
+
+            SizedBox(
+              height: UIGenerator.toUnits(16),
+            ),
+            UIGenerator.subtitle(
+                "This email is not authorized to \n access Blueberry Poll.",
+                textAlign: TextAlign.center),
+            SizedBox(
+              height: UIGenerator.toUnits(32),
+            ),
+            // Align(alignment: Alignment.center, child: UIGenerator.button("Continue", login)),
+            UIGenerator.buttonOutlined("Switch Accounts", switchAccounts),
           ],
         ),
       ),
@@ -136,8 +185,10 @@ class _LoginPageState extends State<LoginPage> {
     });
     String name = nameTextboxController.text.trim();
     print(name);
-    UserSnapshot credentials =
-        UserSnapshot(name: _currentUser.displayName, id: _currentUser.id);
+    UserSnapshot credentials = UserSnapshot(
+        name: _currentUser.displayName,
+        id: _currentUser.id,
+        email: _currentUser.email);
     UserP signedInUser = await this.widget.database.signIn(credentials);
     this.widget.database.setOnlineStatusHooks(signedInUser);
     Navigator.pushReplacement(

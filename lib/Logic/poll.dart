@@ -14,6 +14,7 @@ class PollSnapshot {
   String question;
   AnswerType answerType;
   bool isAnonymous;
+  bool isHidden;
   int timestamp;
   String creatorId;
   bool isActive;
@@ -30,6 +31,7 @@ class PollSnapshot {
     this.answers,
     this.isActive = false,
     this.areResultsVisible = false,
+    this.isHidden = false,
   }) {
     if (this.timestamp == null) {
       this.timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -56,6 +58,7 @@ class PollSnapshot {
       Poll.ANSWER_TYPE_KEY: this.answerType.toString(),
       Poll.ANSWERS_KEY: this.answerListToMap(this.answers),
       Poll.ARE_RESULTS_VISIBLE_KEY: this.areResultsVisible,
+      Poll.IS_HIDDEN_KEY: this.isHidden
       // Poll.IS_ACTIVE_KEY: this.isActive
     };
   }
@@ -65,6 +68,8 @@ class Poll {
   static const String QUESTION_KEY = "question";
   static const String ANSWER_TYPE_KEY = "answer type";
   static const String IS_ANONYMOUS_KEY = "is anonymous";
+  static const String IS_HIDDEN_KEY = "is hidden";
+
   static const String TIMESTAMP_KEY = "timestamp";
   static const String CREATOR_ID_KEY = "creator id";
   static const String ANSWERS_KEY = "answers";
@@ -79,6 +84,7 @@ class Poll {
   String question;
   AnswerType answerType;
   bool isAnonymous;
+  bool isHidden;
   int timestamp;
   String creatorId;
   Stream<List<Answer>> answers;
@@ -102,6 +108,7 @@ class Poll {
           isAnonymous: pollMap[Poll.IS_ANONYMOUS_KEY],
           timestamp: pollMap[Poll.TIMESTAMP_KEY],
           creatorId: pollMap[Poll.CREATOR_ID_KEY],
+          isHidden: pollMap[Poll.IS_HIDDEN_KEY],
           answers:
               Poll.answerMapListToAnswerObjectList(pollMap[Poll.ANSWERS_KEY]),
           areResultsVisible: pollMap[Poll.ARE_RESULTS_VISIBLE_KEY],
@@ -124,6 +131,7 @@ class Poll {
         fetchStreamFeild(Poll.ARE_RESULTS_VISIBLE_KEY).map((QueryEvent data) {
       return data.snapshot.val() as bool;
     });
+
     print("result visibilty stream initialized");
     
   }
@@ -139,6 +147,7 @@ class Poll {
           isAnonymous: pollMap[Poll.IS_ANONYMOUS_KEY],
           timestamp: pollMap[Poll.TIMESTAMP_KEY],
           creatorId: pollMap[Poll.CREATOR_ID_KEY],
+          isHidden: pollMap[Poll.IS_HIDDEN_KEY],
           answers:
               Poll.answerMapListToAnswerObjectList(pollMap[Poll.ANSWERS_KEY]),
           areResultsVisible: pollMap[Poll.ARE_RESULTS_VISIBLE_KEY],
@@ -164,6 +173,7 @@ class Poll {
     this.isAnonymous = await fetchConstantFeild(Poll.IS_ANONYMOUS_KEY);
     this.timestamp = await fetchConstantFeild(Poll.TIMESTAMP_KEY);
     this.creatorId = await fetchConstantFeild(Poll.CREATOR_ID_KEY);
+    this.isHidden = await fetchConstantFeild(Poll.IS_HIDDEN_KEY);
   }
 
   Future<dynamic> fetchConstantFeild(String feild) async {
@@ -303,6 +313,16 @@ class Poll {
             id +
             "/" +
             Poll.ARE_RESULTS_VISIBLE_KEY)
+        .set(visibility);
+  }
+
+  Future<void> setHiddenState(bool visibility) async {
+    await database.entryPoint
+        .child(DatabaseInterface.POLLS_NODE +
+            "/" +
+            id +
+            "/" +
+            Poll.IS_HIDDEN_KEY)
         .set(visibility);
   }
 

@@ -5,15 +5,17 @@ import 'package:meta/meta.dart';
 class UserSnapshot {
   String id;
   String name;
+  String email;
   bool isOnline;
   UserSnapshot({
     this.id,
     @required this.name,
     this.isOnline = false,
+    this.email
   });
 
   Map toMap() {
-    return {UserP.NAME_KEY: this.name, UserP.ONLINE_KEY: this.isOnline};
+    return {UserP.NAME_KEY: this.name, UserP.ONLINE_KEY: this.isOnline, UserP.EMAIL_KEY: this.email};
   }
   // Map fromMap()
 }
@@ -21,8 +23,10 @@ class UserSnapshot {
 class UserP {
   static const NAME_KEY = "name";
   static const ONLINE_KEY = "isOnline";
+  static const EMAIL_KEY = "email";
   DatabaseInterface database;
   Stream<UserSnapshot> allInfoStream;
+  Stream<String> email;
   Stream<String> name;
   String id;
   Stream<bool> isOnline;
@@ -45,6 +49,16 @@ class UserP {
         .entryPoint
         .child(
             DatabaseInterface.USERS_NODE + "/" + this.id + "/" + UserP.NAME_KEY)
+        .onValue
+        .map((QueryEvent data) {
+      return data.snapshot.val();
+    });
+
+    this.email = this
+        .database
+        .entryPoint
+        .child(
+            DatabaseInterface.USERS_NODE + "/" + this.id + "/" + UserP.EMAIL_KEY)
         .onValue
         .map((QueryEvent data) {
       return data.snapshot.val();
@@ -73,6 +87,20 @@ class UserP {
                 this.id +
                 "/" +
                 UserP.NAME_KEY)
+            .once("value"))
+        .snapshot
+        .val();
+  }
+
+  Future<String> getEmail() async {
+    return (await this
+            .database
+            .entryPoint
+            .child(DatabaseInterface.USERS_NODE +
+                "/" +
+                this.id +
+                "/" +
+                UserP.EMAIL_KEY)
             .once("value"))
         .snapshot
         .val();

@@ -4,7 +4,7 @@ import 'package:blueberrypoll/Logic/user.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-enum AnswerEnumYES_NO_NOOPINION { YES, NO, NOOPINION}
+enum AnswerEnumYES_NO_NOOPINION { YES, NO, NOOPINION }
 
 class PollSummaryYES_NO_NOOPINION extends PollSummary {
   int yesCount;
@@ -33,35 +33,34 @@ class AnswerYES_NO_NOOPINION extends Answer {
           respondantId: respondantId,
           timestamp: timestamp,
           pending: pending,
-        ){
-          type = AnswerType.YES_NO_NOOPINION;
-        }
+        ) {
+    type = AnswerType.YES_NO_NOOPINION;
+  }
 
   static AnswerYES_NO_NOOPINION fromMap(Map map) {
     return AnswerYES_NO_NOOPINION(
-      respondantId: map[Answer.RESPONDANT_ID_FEILD],
-      pending: map[Answer.PENDING_FEILD],
-      timestamp: map[Answer.TIMESTAMP_FEILD],
-      answer: answerEnumFromString(map[Answer.ANSWER_FEILD])
-    );
+        respondantId: map[Answer.RESPONDANT_ID_FEILD],
+        pending: map[Answer.PENDING_FEILD],
+        timestamp: map[Answer.TIMESTAMP_FEILD],
+        answer: answerEnumFromString(map[Answer.ANSWER_FEILD]));
   }
 
-  static AnswerEnumYES_NO_NOOPINION answerEnumFromString(String str){
-    return AnswerEnumYES_NO_NOOPINION.values.firstWhere((e) => e.toString() == str);
+  static AnswerEnumYES_NO_NOOPINION answerEnumFromString(String str) {
+    return AnswerEnumYES_NO_NOOPINION.values
+        .firstWhere((e) => e.toString() == str);
   }
-
 
   @override
-  Map<String,dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
-      Answer.PENDING_FEILD : this.pending,
-      Answer.RESPONDANT_ID_FEILD : this.respondantId,
-      Answer.TIMESTAMP_FEILD : timestamp,
-      Answer.ANSWER_FEILD : answer.toString(),
+      Answer.PENDING_FEILD: this.pending,
+      Answer.RESPONDANT_ID_FEILD: this.respondantId,
+      Answer.TIMESTAMP_FEILD: timestamp,
+      Answer.ANSWER_FEILD: answer.toString(),
       Answer.ANSWER_TYPE_FEILD: AnswerType.YES_NO_NOOPINION.toString()
     };
   }
-  
+
   static Stream<PollSummary> generateSummaryStream(
       Stream<List<Answer>> answerListStream) {
     return answerListStream.map((map) => generateSummary(map));
@@ -80,15 +79,18 @@ class AnswerYES_NO_NOOPINION extends Answer {
       } else {
         if (i.answer == AnswerEnumYES_NO_NOOPINION.YES) {
           yesCount++;
-        } else if (i.answer == AnswerEnumYES_NO_NOOPINION.NO){
+        } else if (i.answer == AnswerEnumYES_NO_NOOPINION.NO) {
           noCount++;
-        }else{
-        noOpinionCount++;
+        } else {
+          noOpinionCount++;
         }
-
       }
     }
     return PollSummaryYES_NO_NOOPINION(
-        yesCount: yesCount, noCount: noCount, noOpinionCount: noOpinionCount, pendingCount: pendingCount, totalCount: totalCount);
+        yesCount: yesCount,
+        noCount: noCount,
+        noOpinionCount: noOpinionCount,
+        pendingCount: pendingCount,
+        totalCount: totalCount);
   }
 }

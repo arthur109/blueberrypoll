@@ -1,6 +1,7 @@
 import 'package:blueberrypoll/Data/database_interface.dart';
 import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:blueberrypoll/Logic/user.dart';
+import 'package:blueberrypoll/UI/admin_page.dart';
 import 'package:blueberrypoll/UI/historic_poll.dart';
 import 'package:blueberrypoll/UI/participants_view.dart';
 import 'package:blueberrypoll/UI/poll_view.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'create_poll.dart';
 
 class MainPage extends StatefulWidget {
-    static final navKey = new GlobalKey<NavigatorState>();
+  static final navKey = new GlobalKey<NavigatorState>();
 
   DatabaseInterface database;
   UserP user;
@@ -75,12 +76,21 @@ class _MainPageState extends State<MainPage> {
 
   Widget lastTenPolls() {
     return FutureBuilder(
-      future: this.widget.database.lastTenPolls(),
-      builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+      future: Future.wait([this.widget.database.lastTenPolls(), this.widget.database.isAdmin(this.widget.user)]),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          List<String> keys = List.from(snapshot.data.keys.toList().reversed);
-          if(keys.length == 0){
-            return Center(child: UIGenerator.coloredBoldText("No polls have been created.", UIGenerator.grey));
+          List<String> keys = List.from(snapshot.data[0].keys.toList().reversed);
+          if(!snapshot.data[1]){
+            for(int i = keys.length-1; i >= 0; i--){
+              if(snapshot.data[0][keys[i]][Poll.IS_HIDDEN_KEY] == true){
+                keys.removeAt(i);
+              }
+            }
+          }
+          if (keys.length == 0) {
+            return Center(
+                child: UIGenerator.coloredBoldText(
+                    "No polls have been created.", UIGenerator.grey));
           }
           return ListView.builder(
             itemCount: keys.length + 1,
@@ -116,7 +126,7 @@ class _MainPageState extends State<MainPage> {
                 );
               }
               return HistoricPoll(
-                  keys[index - 1], this.widget.user.id, this.widget.database);
+                  keys[index - 1], this.widget.user.id, this.widget.database, snapshot.data[1]);
             },
           );
         } else {
@@ -171,6 +181,22 @@ class _MainPageState extends State<MainPage> {
               return newButton(false);
             }
           }),
+      FutureBuilder(
+        future: this.widget.database.isAdmin(this.widget.user),
+        initialData: false,
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.data) {
+            return Cupertino.Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: adminSettingsButton(),
+            );
+          }
+          return SizedBox(
+            height: 0,
+            width: 0,
+          );
+        },
+      )
     ]);
   }
 
@@ -220,6 +246,35 @@ class _MainPageState extends State<MainPage> {
             }
           : () {},
     );
+  }
+
+  Widget adminSettingsButton() {
+    return InkWell(
+        child: Row(
+          children: <Widget>[
+            Icon(
+              Icons.lock,
+              size: UIGenerator.toUnits(20),
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: 7,
+            ),
+            UIGenerator.normalText("Admin Controls")
+          ],
+        ),
+        onTap: () {
+          final context = MainPage.navKey.currentState.overlay.context;
+
+          Cupertino.showCupertinoDialog<Null>(
+            context: context,
+            // barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AdminSettings(this.widget.database);
+              //  return Cupertino.CupertinoAlertDialog<NUll(actions: <Widget>[],)
+            },
+          );
+        });
   }
 
   Widget participants() {

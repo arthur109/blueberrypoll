@@ -1,3 +1,4 @@
+
 import 'package:blueberrypoll/Logic/poll.dart';
 import 'package:firebase/firebase.dart';
 import 'package:blueberrypoll/Logic/user.dart';
@@ -8,6 +9,8 @@ class DatabaseInterface {
   static const String POLLS_NODE = "polls";
   static const String ACTIVE_POLL_NODE = "active poll";
   static const String NO_ACTIVE_POLL_CODE = "none";
+  static const String ADMIN_EMAILS_NODE = "admin emails";
+  static const String EMAIL_DOMAINS_NODE = "email domains";
   String rootNode;
   String organization;
   DatabaseReference entryPoint;
@@ -35,6 +38,28 @@ class DatabaseInterface {
         .child(DatabaseInterface.USERS_NODE + "/" + credentials.id)
         .set(credentials.toMap());
     return UserP(id: credentials.id, database: this);
+  }
+
+  Future<bool> isAdmin(UserP user) async {
+    String email = await user.getEmail();
+    String adminEmails = await this.getAdminEmails();
+    return adminEmails.contains(email);
+  }
+
+  Future<String> getAdminEmails() async {
+    return (await this.entryPoint.child(DatabaseInterface.ADMIN_EMAILS_NODE).once("value")).snapshot.val();
+  }
+
+  Future<void> setAdminEmails(String adminEmails) async{
+    await this.entryPoint.child(DatabaseInterface.ADMIN_EMAILS_NODE).set(adminEmails);
+  }
+
+  Future<String> getEmailDomains() async {
+    return (await this.entryPoint.child(DatabaseInterface.EMAIL_DOMAINS_NODE).once("value")).snapshot.val();
+  }
+
+  Future<void> setEmailDomains(String emailDomains) async {
+    await this.entryPoint.child(DatabaseInterface.EMAIL_DOMAINS_NODE).set(emailDomains);
   }
 
   // Future<UserP> signIn(UserSnapshot credentials) async {
@@ -91,7 +116,7 @@ class DatabaseInterface {
   }
 
   Future<Map> lastTenPolls() async {
-    Map answer = ((await this.entryPoint.child(DatabaseInterface.POLLS_NODE).limitToFirst(10).once("value"))).snapshot.val();
+    Map answer = ((await this.entryPoint.child(DatabaseInterface.POLLS_NODE).limitToLast(10).once("value"))).snapshot.val();
     if(answer == null){
       return {};
     }
@@ -110,6 +135,10 @@ class DatabaseInterface {
 
   Future<void> setActivePollId(String pollId) async {
     await this.entryPoint.child(DatabaseInterface.ACTIVE_POLL_NODE).set(pollId);
+  }
+
+  Future<void> deletePoll(String pollId) async {
+    await this.entryPoint.child(DatabaseInterface.POLLS_NODE).child(pollId).remove();
   }
 
   Future<void> endCurrentPoll() async {

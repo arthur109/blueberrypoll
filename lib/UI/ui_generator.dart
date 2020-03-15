@@ -123,15 +123,17 @@ class UIGenerator {
     );
   }
 
-  static Widget subtitle(String text) {
+  static Widget subtitle(String text, {TextAlign textAlign}) {
     return Text(
       text,
       style: TextStyle(
+          
           color: Color.fromRGBO(144, 144, 157, 1),
           fontWeight: FontWeight.bold,
           fontSize: UIGenerator.toUnits(22),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
+          textAlign: textAlign,
     );
   }
 
@@ -237,22 +239,22 @@ class UIGenerator {
   }
 
   static Widget StarRatingAnswerDisplay(int value, bool disabled){
-    Widget highlighted = Icon(Icons.star, color: disabled ?  UIGenerator.grey : UIGenerator.yellow,);
-    Widget notHighlighted = Icon(Icons.star_border, color:  UIGenerator.grey);
+    Widget highlighted = Icon(Icons.star, size: UIGenerator.toUnits(24), color: disabled ?  UIGenerator.grey : UIGenerator.yellow,);
+    Widget notHighlighted = Icon(Icons.star_border, size: UIGenerator.toUnits(24), color:  UIGenerator.grey);
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
       UIGenerator.coloredText(value.toString(), disabled ? UIGenerator.grey : UIGenerator.yellow),
-      SizedBox(width: 6,),
+      SizedBox(width: UIGenerator.toUnits(6),),
       1 <= value ? highlighted : notHighlighted,
-      SizedBox(width: 8,),
+      SizedBox(width: UIGenerator.toUnits(8),),
       2 <= value ? highlighted : notHighlighted,
-      SizedBox(width: 8,),
+      SizedBox(width: UIGenerator.toUnits(8),),
       3 <= value ? highlighted : notHighlighted,
-      SizedBox(width: 8,),
+      SizedBox(width: UIGenerator.toUnits(8),),
       4 <= value ? highlighted : notHighlighted,
-      SizedBox(width: 8,),
+      SizedBox(width: UIGenerator.toUnits(8),),
       5 <= value ? highlighted : notHighlighted
     ],);
   }
