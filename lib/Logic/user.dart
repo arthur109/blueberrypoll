@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 class UserSnapshot {
   String id;
+  String anonymousId;
   String name;
   String email;
   bool isOnline;
@@ -11,7 +12,8 @@ class UserSnapshot {
     this.id,
     @required this.name,
     this.isOnline = false,
-    this.email
+    this.email,
+    this.anonymousId
   });
 
   Map toMap() {
@@ -29,8 +31,9 @@ class UserP {
   Stream<String> email;
   Stream<String> name;
   String id;
+  String anonymousId;
   Stream<bool> isOnline;
-  UserP({@required this.id, @required this.database}) {
+  UserP({@required this.id, @required this.database, this.anonymousId}) {
     this.allInfoStream = this
         .database
         .entryPoint

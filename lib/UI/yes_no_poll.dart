@@ -45,7 +45,7 @@ class _YesNoPollState extends State<YesNoPoll> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return activePoll();
+            return ensurePollIntitialized(activePoll);
           } else {
             return inActivePoll();
           }
@@ -87,6 +87,15 @@ class _YesNoPollState extends State<YesNoPoll> {
     );
   }
 
+  Widget ensurePollIntitialized(Function func){
+    if(this.widget.poll.isConstDataInitialized){
+      return func();
+    }else{
+      this.widget.poll.initializeConstantData().then((value){setState((){});});
+      return UIGenerator.loading(message: "loading poll properties");
+    }
+  }
+
   Widget getAnswerWidget() {
     return Cupertino.ListView(
       shrinkWrap: true,
@@ -105,7 +114,7 @@ class _YesNoPollState extends State<YesNoPoll> {
             ],
           ),
         ),
-        UIGenerator.label("YOUR ANSWER"),
+        UIGenerator.label(this.widget.poll.isAnonymous ? "YOUR ANSWER (ANONYMOUS)": "YOUR ANSWER"),
         SizedBox(
           height: 11,
         ),
@@ -119,7 +128,7 @@ class _YesNoPollState extends State<YesNoPoll> {
                       this.widget.poll.submitAnswer(AnswerYES_NO(
                           pending: false,
                           answer: AnswerEnumYES_NO.YES,
-                          respondantId: this.widget.user.id));
+                          respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
                     },
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
                     child: Ink(
@@ -141,7 +150,7 @@ class _YesNoPollState extends State<YesNoPoll> {
                       this.widget.poll.submitAnswer(AnswerYES_NO(
                           pending: false,
                           answer: AnswerEnumYES_NO.NO,
-                          respondantId: this.widget.user.id));
+                          respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
                     },
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
                     child: Ink(
@@ -246,7 +255,7 @@ class _YesNoPollState extends State<YesNoPoll> {
             height: UIGenerator.toUnits(75),
           ),
           summary.hasResultVisibilityPrivilege
-              ? SummaryButtonBar(summary.isActive, summary.areResultsVisible)
+              ? summaryButtonBar(summary.isActive, summary.areResultsVisible)
               : SizedBox(
                   height: 0,
                   width: 0,
@@ -257,7 +266,7 @@ class _YesNoPollState extends State<YesNoPoll> {
     return UIGenerator.loading(message: "waiting for first answer...");
   }
 
-  Widget SummaryButtonBar(bool isActive, bool areResultsVisible) {
+  Widget summaryButtonBar(bool isActive, bool areResultsVisible) {
     return Row(
       children: <Widget>[
         areResultsVisible
@@ -292,7 +301,7 @@ class _YesNoPollState extends State<YesNoPoll> {
     await this.widget.poll.submitAnswer(AnswerYES_NO(
         pending: true,
         answer: AnswerEnumYES_NO.YES,
-        respondantId: this.widget.user.id));
+        respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
     setState(() {});
   }
 
@@ -307,7 +316,7 @@ class _YesNoPollState extends State<YesNoPoll> {
     // this.summary.hasResultVisibilityPrivilege = false;
 
     this.userAnswerStream =
-        this.widget.poll.getAnswerOfUser(this.widget.user.id);
+        this.widget.poll.getAnswerOfUser(this.widget.user.id, this.widget.user.anonymousId);
 
     this.participantIsActiveStream = this.widget.poll.isActiveStream();
 

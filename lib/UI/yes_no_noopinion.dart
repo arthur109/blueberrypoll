@@ -29,7 +29,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
 
   @override
   Widget build(BuildContext context) {
-    return  participantView();
+    return participantView();
   }
 
   Widget creatorView() {
@@ -42,7 +42,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return activePoll();
+           return ensurePollIntitialized(activePoll);
           } else {
             return inActivePoll();
           }
@@ -85,8 +85,8 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
   }
 
   Widget getAnswerWidget() {
-      return Cupertino.ListView(
-        shrinkWrap: true,
+    return Cupertino.ListView(
+      shrinkWrap: true,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
@@ -102,7 +102,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
             ],
           ),
         ),
-        UIGenerator.label("YOUR ANSWER"),
+        UIGenerator.label(this.widget.poll.isAnonymous ? "YOUR ANSWER (ANONYMOUS)": "YOUR ANSWER"),
         SizedBox(
           height: 11,
         ),
@@ -116,12 +116,13 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                       this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
                           pending: false,
                           answer: AnswerEnumYES_NO_NOOPINION.YES,
-                          respondantId: this.widget.user.id));
+                          respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
                     },
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
                     child: Ink(
                       color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
+                      padding: EdgeInsets.symmetric(
+                          vertical: UIGenerator.toUnits(16)),
                       child: Center(
                         child: UIGenerator.coloredText(
                             "Yes", Color.fromARGB(255, 91, 91, 111)),
@@ -138,12 +139,13 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                       this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
                           pending: false,
                           answer: AnswerEnumYES_NO_NOOPINION.NO,
-                          respondantId: this.widget.user.id));
+                          respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
                     },
                     hoverColor: Color.fromRGBO(235, 235, 237, 1),
                     child: Ink(
                       color: Color.fromARGB(255, 246, 246, 250),
-                      padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
+                      padding: EdgeInsets.symmetric(
+                          vertical: UIGenerator.toUnits(16)),
                       child: Center(
                         child: UIGenerator.coloredText(
                             "No", Color.fromARGB(255, 91, 91, 111)),
@@ -163,12 +165,13 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
                 this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
                     pending: false,
                     answer: AnswerEnumYES_NO_NOOPINION.NOOPINION,
-                    respondantId: this.widget.user.id));
+                    respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
               },
               hoverColor: Color.fromRGBO(235, 235, 237, 1),
               child: Ink(
                 color: Color.fromARGB(255, 246, 246, 250),
-                padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
+                padding:
+                    EdgeInsets.symmetric(vertical: UIGenerator.toUnits(16)),
                 child: Center(
                   child: UIGenerator.coloredText(
                       "No Opinion", Color.fromARGB(255, 91, 91, 111)),
@@ -185,7 +188,7 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
     if (summary != null) {
       bool canViewResults =
           (summary.areResultsVisible || summary.hasResultVisibilityPrivilege);
-          return Cupertino.ListView(
+      return Cupertino.ListView(
         shrinkWrap: true,
         children: <Widget>[
           Padding(
@@ -307,8 +310,8 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
           width: UIGenerator.toUnits(20),
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
-          this.widget.poll.clearAnswers().then((data){
-            setState((){
+          this.widget.poll.clearAnswers().then((data) {
+            setState(() {
               summary = null;
             });
           });
@@ -322,12 +325,13 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
       ],
     );
   }
+
   Future<void> setPendingAnswer() async {
     print("---- set pending answer -----");
     await this.widget.poll.submitAnswer(AnswerYES_NO_NOOPINION(
         pending: true,
         answer: AnswerEnumYES_NO_NOOPINION.YES,
-        respondantId: this.widget.user.id));
+        respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
     setState(() {});
   }
 
@@ -335,13 +339,26 @@ class _YesNoNoOpinionPollState extends State<YesNoNoOpinionPoll> {
     return pollSummary();
   }
 
+  Widget ensurePollIntitialized(Function func) {
+    if (this.widget.poll.isConstDataInitialized) {
+      return func();
+    } else {
+      this.widget.poll.initializeConstantData().then((value) {
+        setState(() {});
+      });
+      return UIGenerator.loading(message: "loading poll properties");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     // this.summary.hasResultVisibilityPrivilege = false;
 
-    this.userAnswerStream =
-        this.widget.poll.getAnswerOfUser(this.widget.user.id);
+    this.userAnswerStream = this
+        .widget
+        .poll
+        .getAnswerOfUser(this.widget.user.id, this.widget.user.anonymousId);
 
     this.participantIsActiveStream = this.widget.poll.isActiveStream();
 

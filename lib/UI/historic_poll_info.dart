@@ -89,11 +89,11 @@ class _HistoricPollInfoViewState extends State<HistoricPollInfoView> {
         SizedBox(
           width: UIGenerator.toUnits(24),
         ),
-        hidenToggleButton(),
+        this.widget.isAdmin ? hidenToggleButton() : Container(),
         SizedBox(
           width: UIGenerator.toUnits(24),
         ),
-        deleteButton()
+        this.widget.isAdmin ? deleteButton() : Container()
       ],
       mainAxisSize: MainAxisSize.min,
     );
@@ -101,17 +101,23 @@ class _HistoricPollInfoViewState extends State<HistoricPollInfoView> {
 
   Widget exitButton() {
     return InkWell(
+      
+       borderRadius:
+                BorderRadius.all(Radius.circular(UIGenerator.toUnits(6))),
+        
+      hoverColor: UIGenerator.orange,
       onTap: () {
         Navigator.of(context).pop(false);
       },
-      child: Container(
+      child: Ink(
         padding: EdgeInsets.symmetric(
             vertical: UIGenerator.toUnits(7),
             horizontal: UIGenerator.toUnits(10)),
         decoration: BoxDecoration(
             color: Colors.black,
-            borderRadius:
-                BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
+             borderRadius:
+                BorderRadius.all(Radius.circular(UIGenerator.toUnits(7))),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -132,18 +138,22 @@ class _HistoricPollInfoViewState extends State<HistoricPollInfoView> {
 
   Widget deleteButton() {
     return InkWell(
+       borderRadius:
+                BorderRadius.all(Radius.circular(UIGenerator.toUnits(6))),
+      hoverColor: UIGenerator.orange,
       onTap: () async {
         await this.widget.database.deletePoll(this.widget.pollId);
         Navigator.of(context).pop(true);
       },
-      child: Container(
+      child: Ink(
+        
         padding: EdgeInsets.symmetric(
             vertical: UIGenerator.toUnits(7),
             horizontal: UIGenerator.toUnits(10)),
         decoration: BoxDecoration(
             color: Colors.black,
             borderRadius:
-                BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
+                BorderRadius.all(Radius.circular(UIGenerator.toUnits(7)))),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -169,15 +179,18 @@ class _HistoricPollInfoViewState extends State<HistoricPollInfoView> {
           if (snapshot.hasData) {
             bool isHidden = (snapshot.data.isHidden == true);
             return InkWell(
+               borderRadius:
+                BorderRadius.all(Radius.circular(UIGenerator.toUnits(6))),
+              hoverColor: UIGenerator.orange,
               onTap: isHidden ? unhidePoll : hidePoll,
-              child: Container(
+              child: Ink(
                 padding: EdgeInsets.symmetric(
                     vertical: UIGenerator.toUnits(7),
                     horizontal: UIGenerator.toUnits(10)),
                 decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.all(
-                        Radius.circular(UIGenerator.toUnits(6)))),
+                        Radius.circular(UIGenerator.toUnits(7)))),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[

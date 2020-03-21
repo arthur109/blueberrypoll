@@ -45,7 +45,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return activePoll();
+            return ensurePollIntitialized(activePoll);
           } else {
             return inActivePoll();
           }
@@ -88,8 +88,8 @@ class _TextFeildPollState extends State<TextFeildPoll> {
   }
 
   Widget getAnswerWidget() {
-      return Cupertino.ListView(
-        shrinkWrap: true,
+    return Cupertino.ListView(
+      shrinkWrap: true,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
@@ -105,7 +105,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
             ],
           ),
         ),
-        UIGenerator.label("YOUR ANSWER"),
+        UIGenerator.label(this.widget.poll.isAnonymous ? "YOUR ANSWER (ANONYMOUS)": "YOUR ANSWER"),
         SizedBox(
           height: 11,
         ),
@@ -142,18 +142,20 @@ class _TextFeildPollState extends State<TextFeildPoll> {
         SizedBox(
           height: UIGenerator.toUnits(20),
         ),
-        Align(child: UIGenerator.button("Submit Answer", submitAnswer), alignment: Alignment.centerLeft,)
+        Align(
+          child: UIGenerator.button("Submit Answer", submitAnswer),
+          alignment: Alignment.centerLeft,
+        )
       ],
     );
   }
 
-  void submitAnswer(){
-    if(_formKey.currentState.validate()){
+  void submitAnswer() {
+    if (_formKey.currentState.validate()) {
       this.widget.poll.submitAnswer(AnswerTEXT_FEILD(
-        respondantId: this.widget.user.id,
-        answer: this.answerTextboxController.text.trim(),
-        pending: false
-      ));
+          respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id,
+          answer: this.answerTextboxController.text.trim(),
+          pending: false));
     }
   }
 
@@ -161,7 +163,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
     if (summary != null) {
       bool canViewResults =
           (summary.areResultsVisible || summary.hasResultVisibilityPrivilege);
-          return Cupertino.ListView(
+      return Cupertino.ListView(
         shrinkWrap: true,
         children: <Widget>[
           Padding(
@@ -207,11 +209,8 @@ class _TextFeildPollState extends State<TextFeildPoll> {
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    UIGenerator.progressBar(
-                        summary.answeredCount,
-                        summary.totalCount,
-                        Colors.black,
-                        false,
+                    UIGenerator.progressBar(summary.answeredCount,
+                        summary.totalCount, Colors.black, false,
                         showAmount: true),
                     SizedBox(
                       height: UIGenerator.toUnits(35),
@@ -253,8 +252,8 @@ class _TextFeildPollState extends State<TextFeildPoll> {
           width: UIGenerator.toUnits(20),
         ),
         UIGenerator.buttonOutlined("Reset Poll", () {
-          this.widget.poll.clearAnswers().then((data){
-            setState((){
+          this.widget.poll.clearAnswers().then((data) {
+            setState(() {
               summary = null;
             });
           });
@@ -274,7 +273,7 @@ class _TextFeildPollState extends State<TextFeildPoll> {
     await this.widget.poll.submitAnswer(AnswerTEXT_FEILD(
         pending: true,
         answer: "This is a bug. Please report it.",
-        respondantId: this.widget.user.id));
+        respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
     setState(() {});
   }
 
@@ -282,13 +281,26 @@ class _TextFeildPollState extends State<TextFeildPoll> {
     return pollSummary();
   }
 
+  Widget ensurePollIntitialized(Function func) {
+    if (this.widget.poll.isConstDataInitialized) {
+      return func();
+    } else {
+      this.widget.poll.initializeConstantData().then((value) {
+        setState(() {});
+      });
+      return UIGenerator.loading(message: "loading poll properties");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     // this.summary.hasResultVisibilityPrivilege = false;
 
-    this.userAnswerStream =
-        this.widget.poll.getAnswerOfUser(this.widget.user.id);
+    this.userAnswerStream = this
+        .widget
+        .poll
+        .getAnswerOfUser(this.widget.user.id, this.widget.user.anonymousId);
 
     this.participantIsActiveStream = this.widget.poll.isActiveStream();
 

@@ -80,13 +80,6 @@ class _MainPageState extends State<MainPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<String> keys = List.from(snapshot.data[0].keys.toList().reversed);
-          if(!snapshot.data[1]){
-            for(int i = keys.length-1; i >= 0; i--){
-              if(snapshot.data[0][keys[i]][Poll.IS_HIDDEN_KEY] == true){
-                keys.removeAt(i);
-              }
-            }
-          }
           if (keys.length == 0) {
             return Center(
                 child: UIGenerator.coloredBoldText(
@@ -206,13 +199,13 @@ class _MainPageState extends State<MainPage> {
         children: <Widget>[
           Icon(
             Icons.archive,
-            size: UIGenerator.toUnits(30),
+            size: UIGenerator.toUnits(20),
             color: UIGenerator.red,
           ),
           SizedBox(
             width: 7,
           ),
-          UIGenerator.coloredBoldText("End Current Poll", UIGenerator.red)
+          UIGenerator.coloredText("End Current Poll", UIGenerator.red)
         ],
       ),
       onTap: () {

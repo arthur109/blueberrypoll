@@ -30,7 +30,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
 
   @override
   Widget build(BuildContext context) {
-    return  participantView();
+    return participantView();
   }
 
   Widget creatorView() {
@@ -43,7 +43,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return activePoll();
+            return ensurePollIntitialized(activePoll);
           } else {
             return inActivePoll();
           }
@@ -85,9 +85,20 @@ class _StarRatingPollState extends State<StarRatingPoll> {
     );
   }
 
+  Widget ensurePollIntitialized(Function func) {
+    if (this.widget.poll.isConstDataInitialized) {
+      return func();
+    } else {
+      this.widget.poll.initializeConstantData().then((value) {
+        setState(() {});
+      });
+      return UIGenerator.loading(message: "loading poll properties");
+    }
+  }
+
   Widget getAnswerWidget() {
-          return Cupertino.ListView(
-        shrinkWrap: true,
+    return Cupertino.ListView(
+      shrinkWrap: true,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(100)),
@@ -103,7 +114,9 @@ class _StarRatingPollState extends State<StarRatingPoll> {
             ],
           ),
         ),
-        UIGenerator.label("YOUR ANSWER"),
+        UIGenerator.label(this.widget.poll.isAnonymous
+            ? "YOUR ANSWER (ANONYMOUS)"
+            : "YOUR ANSWER"),
         SizedBox(
           height: UIGenerator.toUnits(11),
         ),
@@ -113,7 +126,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
               children: <Widget>[
                 StarRatingButton(1, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
-                      respondantId: this.widget.user.id,
+                      respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id,
                       pending: false,
                       answer: AnswerEnumSTAR_RATING.ONE));
                 }),
@@ -122,7 +135,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                 ),
                 StarRatingButton(2, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
-                      respondantId: this.widget.user.id,
+                      respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id,
                       pending: false,
                       answer: AnswerEnumSTAR_RATING.TWO));
                 }),
@@ -131,7 +144,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                 ),
                 StarRatingButton(3, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
-                      respondantId: this.widget.user.id,
+                      respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id,
                       pending: false,
                       answer: AnswerEnumSTAR_RATING.THREE));
                 }),
@@ -140,7 +153,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                 ),
                 StarRatingButton(4, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
-                      respondantId: this.widget.user.id,
+                      respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id,
                       pending: false,
                       answer: AnswerEnumSTAR_RATING.FOUR));
                 }),
@@ -149,7 +162,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                 ),
                 StarRatingButton(5, () {
                   this.widget.poll.submitAnswer(AnswerSTAR_RATING(
-                      respondantId: this.widget.user.id,
+                      respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id,
                       pending: false,
                       answer: AnswerEnumSTAR_RATING.FIVE));
                 }),
@@ -327,7 +340,7 @@ class _StarRatingPollState extends State<StarRatingPoll> {
     await this.widget.poll.submitAnswer(AnswerSTAR_RATING(
         pending: true,
         answer: AnswerEnumSTAR_RATING.ONE,
-        respondantId: this.widget.user.id));
+        respondantId: this.widget.poll.isAnonymous ? this.widget.user.anonymousId : this.widget.user.id));
     setState(() {});
   }
 
@@ -354,7 +367,8 @@ class _StarRatingPollState extends State<StarRatingPoll> {
                     size: UIGenerator.toUnits(32),
                   )
                 : Icon(Icons.star_border,
-                    color: Color.fromARGB(255, 91, 91, 111), size: UIGenerator.toUnits(32)),
+                    color: Color.fromARGB(255, 91, 91, 111),
+                    size: UIGenerator.toUnits(32)),
           ),
         ),
       ),
@@ -370,8 +384,10 @@ class _StarRatingPollState extends State<StarRatingPoll> {
     super.initState();
     // this.summary.hasResultVisibilityPrivilege = false;
 
-    this.userAnswerStream =
-        this.widget.poll.getAnswerOfUser(this.widget.user.id);
+    this.userAnswerStream = this
+        .widget
+        .poll
+        .getAnswerOfUser(this.widget.user.id, this.widget.user.anonymousId);
 
     this.participantIsActiveStream = this.widget.poll.isActiveStream();
 

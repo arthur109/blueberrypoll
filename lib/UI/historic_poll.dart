@@ -28,18 +28,21 @@ class HistoricPoll extends StatefulWidget {
 
 class _HistoricPollState extends State<HistoricPoll> {
   bool highlighted = false;
-  bool deleted = false;
   Poll poll;
   Stream<PollSnapshot> pollSnapshotStream;
 
   @override
   Widget build(BuildContext context) {
-    return deleted ? SizedBox(width: 0, height: 0,):InkWell(
+    return InkWell(
       child: StreamBuilder(
           stream: pollSnapshotStream,
           builder:
               (BuildContext context, AsyncSnapshot<PollSnapshot> snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              if(snapshot.hasData){
+                if((snapshot.data.isHidden == true) && (!this.widget.isAdmin)){
+                  return showNothing();
+                }
               String timeText = timeago.format(
                   DateTime.fromMillisecondsSinceEpoch(snapshot.data.timestamp));
               return MouseRegion(
@@ -102,6 +105,9 @@ class _HistoricPollState extends State<HistoricPoll> {
                           ],
                         ),
                       )));
+              }else{
+                return showNothing();
+              }
             } else {
               return Container(
                 padding:
@@ -115,10 +121,13 @@ class _HistoricPollState extends State<HistoricPoll> {
     );
   }
 
+  Widget showNothing(){
+    return SizedBox(width: 0, height: 0,);
+  }
   void showPollInfo() async {
     final context = MainPage.navKey.currentState.overlay.context;
 
-    await Cupertino.showCupertinoDialog<bool>(
+    Cupertino.showCupertinoDialog<bool>(
       context: context,
       // barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -126,11 +135,7 @@ class _HistoricPollState extends State<HistoricPoll> {
             this.widget.database, this.widget.isAdmin);
         //  return Cupertino.CupertinoAlertDialog<NUll(actions: <Widget>[],)
       },
-    ).then((bool wasItdeleted){
-      setState(() {
-        deleted = wasItdeleted;
-      });
-    });
+    );
   }
 
   Future<String> getSubtitle(PollSnapshot snapshot) async {

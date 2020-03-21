@@ -85,6 +85,7 @@ class Poll {
   AnswerType answerType;
   bool isAnonymous;
   bool isHidden;
+  bool isConstDataInitialized = false;
   int timestamp;
   String creatorId;
   Stream<List<Answer>> answers;
@@ -174,6 +175,7 @@ class Poll {
     this.timestamp = await fetchConstantFeild(Poll.TIMESTAMP_KEY);
     this.creatorId = await fetchConstantFeild(Poll.CREATOR_ID_KEY);
     this.isHidden = await fetchConstantFeild(Poll.IS_HIDDEN_KEY);
+    isConstDataInitialized = true;
   }
 
   Future<dynamic> fetchConstantFeild(String feild) async {
@@ -258,11 +260,13 @@ class Poll {
     return (await this.database.entryPoint.child(this.answersPath()).once("value")).snapshot.exists();
       }
 
-  Stream getAnswerOfUser(String userId) {
+  Stream getAnswerOfUser(String userId, String anonymousId) {
+    print("GETTING ANSWER OF USER");
+    print(userId);
     return this.answers.map((List answers){
       for(Answer i in answers){
         // print(i.toMap());
-        if(i.respondantId == userId){
+        if(i.respondantId == userId || i.respondantId == anonymousId){
           return i;
         }
       }

@@ -78,10 +78,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget confirmAccount() {
     return FutureBuilder(
-      future: this.widget.database.getEmailDomains(),
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+      future: this.widget.database.isEmailAuthorized(_currentUser.email),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data.contains(_currentUser.email.split("@")[1])) {
+          if (snapshot.data) {
             return authorizedLogin();
           } else {
             return unAuthorizedLogin();
@@ -188,7 +188,9 @@ class _LoginPageState extends State<LoginPage> {
     UserSnapshot credentials = UserSnapshot(
         name: _currentUser.displayName,
         id: _currentUser.id,
-        email: _currentUser.email);
+        email: _currentUser.email,
+        anonymousId: (await this.widget.database.getAnonymousId())
+        );
     UserP signedInUser = await this.widget.database.signIn(credentials);
     this.widget.database.setOnlineStatusHooks(signedInUser);
     Navigator.pushReplacement(
