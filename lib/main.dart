@@ -15,11 +15,16 @@ import 'package:flutter/material.dart';
 void main() async {
   DatabaseInterface database =
   // new DatabaseInterface(organization: "dev_org_two");
-    new DatabaseInterface(organization: "dev_organization");
+  new DatabaseInterface(organization: "dev_organization");
 
   runApp(CupertinoApp(
     navigatorKey:MainPage.navKey,
     debugShowCheckedModeBanner: false,
-    home: LoginPage(database)
+    home: LoginPage(database),
+    localizationsDelegates: [
+    DefaultMaterialLocalizations.delegate,
+    DefaultCupertinoLocalizations.delegate,
+    DefaultWidgetsLocalizations.delegate,
+  ],
   ));
 }

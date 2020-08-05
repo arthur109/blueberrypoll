@@ -9,6 +9,7 @@ import 'package:blueberrypoll/Logic/yes_no_noopinion_answer.dart';
 import 'package:blueberrypoll/UI/ui_generator.dart';
 import 'package:flutter/cupertino.dart' as Cupertino;
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class ParticipantsView extends StatefulWidget {
   String pollId;
@@ -27,7 +28,7 @@ class _ParticipantsViewState extends State<ParticipantsView> {
 
   @override
   Widget build(BuildContext context) {
-    if(this.widget.pollId != this.prevId){
+    if (this.widget.pollId != this.prevId) {
       initPoll();
     }
 
@@ -52,14 +53,25 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                     info.areResultsVisible);
                 bool showNames = !info.isAnonymous;
                 List<Answer> answers = info.answers;
-
+                //sorts answerse based on time, but prioritizes non-pending answers
+                answers.sort((a, b) {
+                  if(a.pending == b.pending){
+                    return a.timestamp.compareTo(b.timestamp);
+                  }
+                  if(a.pending == true && b.pending == false){
+                    return 1;
+                  }
+                  return -1;
+                });
                 return Expanded(
-                                  child: Column(
+                  child: Column(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(top: UIGenerator.toUnits(100), bottom: UIGenerator.toUnits(26)),
+                        padding: EdgeInsets.only(
+                            top: UIGenerator.toUnits(100),
+                            bottom: UIGenerator.toUnits(26)),
                         child: UIGenerator.subtitle(
                             "Participants (" + answers.length.toString() + ")"),
                       ),
@@ -69,7 +81,8 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                           itemCount: answers.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: UIGenerator.toUnits(10)),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
@@ -80,8 +93,10 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                                     child: showNames
                                         ? StreamBuilder(
                                             stream: UserP(
-                                                    id: answers[index].respondantId,
-                                                    database: this.widget.database)
+                                                    id: answers[index]
+                                                        .respondantId,
+                                                    database:
+                                                        this.widget.database)
                                                 .name,
                                             initialData: "...",
                                             builder: (BuildContext context,
@@ -96,8 +111,13 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                                   ),
                                   Expanded(
                                       flex: 4,
-                                      child: 
-                                      answers[index].pending ?  UIGenerator.fadedNormalText("answering poll...") : showResults ? displayAnswer(answers[index]) : UIGenerator.fadedNormalText("answer hidden")),
+                                      child: answers[index].pending
+                                          ? UIGenerator.fadedNormalText(
+                                              "answering poll...")
+                                          : showResults
+                                              ? displayAnswer(answers[index])
+                                              : UIGenerator.fadedNormalText(
+                                                  "answer hidden")),
                                 ],
                               ),
                             );
@@ -119,40 +139,40 @@ class _ParticipantsViewState extends State<ParticipantsView> {
     );
   }
 
-  Widget displayAnswer(Answer globalAnswer){
-    if(globalAnswer.type == AnswerType.YES_NO){
+  Widget displayAnswer(Answer globalAnswer) {
+    if (globalAnswer.type == AnswerType.YES_NO) {
       AnswerYES_NO answer = globalAnswer as AnswerYES_NO;
-      if(answer.answer == AnswerEnumYES_NO.YES){
+      if (answer.answer == AnswerEnumYES_NO.YES) {
         return UIGenerator.coloredText("Yes", UIGenerator.green);
-      }else if(answer.answer == AnswerEnumYES_NO.NO){
+      } else if (answer.answer == AnswerEnumYES_NO.NO) {
         return UIGenerator.coloredText("No", UIGenerator.red);
       }
-    }else if(globalAnswer.type == AnswerType.YES_NO_NOOPINION){
+    } else if (globalAnswer.type == AnswerType.YES_NO_NOOPINION) {
       AnswerYES_NO_NOOPINION answer = globalAnswer as AnswerYES_NO_NOOPINION;
-      if(answer.answer == AnswerEnumYES_NO_NOOPINION.YES){
+      if (answer.answer == AnswerEnumYES_NO_NOOPINION.YES) {
         return UIGenerator.coloredText("Yes", UIGenerator.green);
-      }else if(answer.answer == AnswerEnumYES_NO_NOOPINION.NO){
+      } else if (answer.answer == AnswerEnumYES_NO_NOOPINION.NO) {
         return UIGenerator.coloredText("No", UIGenerator.red);
-      }else if(answer.answer == AnswerEnumYES_NO_NOOPINION.NOOPINION){
+      } else if (answer.answer == AnswerEnumYES_NO_NOOPINION.NOOPINION) {
         return UIGenerator.coloredText("No Opinion", UIGenerator.yellow);
       }
-    }else if(globalAnswer.type == AnswerType.STAR_RATING){
+    } else if (globalAnswer.type == AnswerType.STAR_RATING) {
       AnswerSTAR_RATING answer = globalAnswer as AnswerSTAR_RATING;
-      if(answer.answer == AnswerEnumSTAR_RATING.ONE){
+      if (answer.answer == AnswerEnumSTAR_RATING.ONE) {
         return UIGenerator.StarRatingAnswerDisplay(1, false);
-      } else if(answer.answer == AnswerEnumSTAR_RATING.TWO){
+      } else if (answer.answer == AnswerEnumSTAR_RATING.TWO) {
         return UIGenerator.StarRatingAnswerDisplay(2, false);
-      } else if(answer.answer == AnswerEnumSTAR_RATING.THREE){
+      } else if (answer.answer == AnswerEnumSTAR_RATING.THREE) {
         return UIGenerator.StarRatingAnswerDisplay(3, false);
-      } else if(answer.answer == AnswerEnumSTAR_RATING.FOUR){
+      } else if (answer.answer == AnswerEnumSTAR_RATING.FOUR) {
         return UIGenerator.StarRatingAnswerDisplay(4, false);
-      } else if(answer.answer == AnswerEnumSTAR_RATING.FIVE){
+      } else if (answer.answer == AnswerEnumSTAR_RATING.FIVE) {
         return UIGenerator.StarRatingAnswerDisplay(5, false);
       }
-    }else if(globalAnswer.type == AnswerType.TEXT_FEILD){
+    } else if (globalAnswer.type == AnswerType.TEXT_FEILD) {
       AnswerTEXT_FEILD answer = globalAnswer as AnswerTEXT_FEILD;
       return UIGenerator.normalText(answer.answer);
-    } 
+    }
   }
 
   Widget userOnlineStatusInfo() {
@@ -173,7 +193,9 @@ class _ParticipantsViewState extends State<ParticipantsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: UIGenerator.toUnits(100), bottom: UIGenerator.toUnits(26)),
+              padding: EdgeInsets.only(
+                  top: UIGenerator.toUnits(100),
+                  bottom: UIGenerator.toUnits(26)),
               child: UIGenerator.subtitle(
                   "Participants (" + onlineUsers.length.toString() + ")"),
             ),
@@ -183,15 +205,16 @@ class _ParticipantsViewState extends State<ParticipantsView> {
                 itemCount: onlineUsers.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
+                    padding:
+                        EdgeInsets.symmetric(vertical: UIGenerator.toUnits(10)),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       // mainAxisAlignment: Mai,
                       children: <Widget>[
                         Expanded(
                             flex: 3,
-                            child:
-                                UIGenerator.normalText(onlineUsers[index].name)),
+                            child: UIGenerator.normalText(
+                                onlineUsers[index].name)),
                         Expanded(
                             flex: 2,
                             child: UIGenerator.fadedNormalText(
@@ -209,14 +232,14 @@ class _ParticipantsViewState extends State<ParticipantsView> {
     );
   }
 
-  void initPoll(){
+  void initPoll() {
     prevId = this.widget.pollId;
     if (this.widget.pollId != null) {
       print("-- initializing poll --");
       poll = new Poll(id: this.widget.pollId, database: this.widget.database);
       pollInfoFetchFuture = poll.initializeConstantData();
       pollSnapshotStream = this.poll.allInfoStream;
-    }else{
+    } else {
       print("poll not initilized");
       print(this.widget.pollId);
     }
