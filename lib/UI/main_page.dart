@@ -11,7 +11,11 @@ import 'package:flutter/material.dart';
 
 import 'create_poll.dart';
 
+
+
 class MainPage extends StatefulWidget {
+    static const double POLL_DELETEBALITY_TIMEOUT_MINUTES = 10;
+
   static final navKey = new GlobalKey<NavigatorState>();
 
   DatabaseInterface database;
@@ -155,16 +159,24 @@ class _MainPageState extends State<MainPage> {
               } else {
                 return FutureBuilder(
                   future:
+                      Future.wait([
                       Poll(id: snapshot.data, database: this.widget.database)
                           .getSnapshot(),
+                          this.widget.database.isAdmin(this.widget.user)
+                          ]),
+
+
                   builder: (BuildContext context,
-                      AsyncSnapshot<PollSnapshot> snapshot) {
+                      AsyncSnapshot<List> snapshot) {
                     if (snapshot.hasData) {
-                      if ((DateTime.now().millisecondsSinceEpoch -
-                              snapshot.data.timestamp) >
-                          60000 * 10) {
+                      if(snapshot.data[1] == true){
                         return endPollButton();
-                      }
+                      }else{
+                      if ((DateTime.now().millisecondsSinceEpoch -
+                              snapshot.data[0].timestamp) >
+                          60000 * MainPage.POLL_DELETEBALITY_TIMEOUT_MINUTES) {
+                        return endPollButton();
+                      }}
                     }
                     return newButton(false);
                   },
@@ -174,15 +186,13 @@ class _MainPageState extends State<MainPage> {
               return newButton(false);
             }
           }),
+          Expanded(child: Container(),),
       FutureBuilder(
         future: this.widget.database.isAdmin(this.widget.user),
         initialData: false,
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.data) {
-            return Cupertino.Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: adminSettingsButton(),
-            );
+           return adminSettingsButton();
           }
           return SizedBox(
             height: 0,
