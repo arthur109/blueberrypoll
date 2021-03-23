@@ -12,19 +12,21 @@ import 'package:firebase/firebase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+const PRODUCTION_ORGANIZATION_NODE_KEY = "production-organization";
+const DEVELOPMENT_ORGANIZATION_NODE_KEY = "development-organization";
 void main() async {
   DatabaseInterface database =
-  // new DatabaseInterface(organization: "dev_org_two");
-  new DatabaseInterface(organization: "dev_organization");
+      // new DatabaseInterface(organization: "dev_org_two");
+      new DatabaseInterface(organization: PRODUCTION_ORGANIZATION_NODE_KEY);
 
   runApp(CupertinoApp(
-    navigatorKey:MainPage.navKey,
+    navigatorKey: MainPage.navKey,
     debugShowCheckedModeBanner: false,
     home: LoginPage(database),
     localizationsDelegates: [
-    DefaultMaterialLocalizations.delegate,
-    DefaultCupertinoLocalizations.delegate,
-    DefaultWidgetsLocalizations.delegate,
-  ],
+      DefaultMaterialLocalizations.delegate,
+      DefaultCupertinoLocalizations.delegate,
+      DefaultWidgetsLocalizations.delegate,
+    ],
   ));
 }

@@ -5,14 +5,15 @@ class UIGenerator {
   static Color green = Color.fromRGBO(132, 210, 132, 1);
   static Color red = Color.fromRGBO(242, 122, 110, 1);
   static Color yellow = Color.fromRGBO(248, 204, 70, 1);
-  static Color orange = Color.fromRGBO(250, 160, 138, 1);
+  static Color orange = Color.fromRGBO(0, 160, 138, 1);
   static Color grey = Color.fromRGBO(190, 190, 203, 1);
   static Color lightGrey = Color.fromARGB(255, 246, 246, 250);
   static double width;
 
-  static double toUnits(double value){
-    return ((value/1920)*width).roundToDouble();
+  static double toUnits(double value) {
+    return ((value / 1920) * width).roundToDouble();
   }
+
   static Widget logo() {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -63,15 +64,25 @@ class UIGenerator {
     );
   }
 
-  static progressBar(int current, int total, Color color, bool disabled, {bool showAmount = false}) {
-    if(showAmount){
+  static progressBar(int current, int total, Color color, bool disabled,
+      {bool showAmount = false}) {
+    if (showAmount) {
       return Row(
         // mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[disabled ? UIGenerator.fadedNormalText(current.toString()) : UIGenerator.normalText(current.toString()), SizedBox(width: UIGenerator.toUnits(8)), Expanded(child: UIGenerator.progressBar(current, total, color, disabled, showAmount: false))],);
+        children: <Widget>[
+          disabled
+              ? UIGenerator.fadedNormalText(current.toString())
+              : UIGenerator.normalText(current.toString()),
+          SizedBox(width: UIGenerator.toUnits(8)),
+          Expanded(
+              child: UIGenerator.progressBar(current, total, color, disabled,
+                  showAmount: false))
+        ],
+      );
     }
-    if(disabled){
+    if (disabled) {
       color = Color.fromRGBO(190, 190, 203, 1);
     }
     return Container(
@@ -82,7 +93,8 @@ class UIGenerator {
                 child: Container(
                     width: UIGenerator.toUnits(15),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(100))),
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(UIGenerator.toUnits(100))),
                       color: color,
                     ))),
             Expanded(
@@ -127,13 +139,12 @@ class UIGenerator {
     return Text(
       text,
       style: TextStyle(
-          
           color: Color.fromRGBO(144, 144, 157, 1),
           fontWeight: FontWeight.bold,
           fontSize: UIGenerator.toUnits(22),
           fontStyle: FontStyle.normal,
           fontFamily: 'Muli'),
-          textAlign: textAlign,
+      textAlign: textAlign,
     );
   }
 
@@ -165,8 +176,7 @@ class UIGenerator {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Cupertino.CupertinoActivityIndicator(
-            ),
+            Cupertino.CupertinoActivityIndicator(),
             SizedBox(
               height: UIGenerator.toUnits(12),
             ),
@@ -193,10 +203,13 @@ class UIGenerator {
     return InkWell(
         onTap: func,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(14), horizontal: UIGenerator.toUnits(30)),
+          padding: EdgeInsets.symmetric(
+              vertical: UIGenerator.toUnits(14),
+              horizontal: UIGenerator.toUnits(30)),
           decoration: BoxDecoration(
               color: UIGenerator.orange,
-              borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
           child: coloredText(text, Colors.white),
         ));
   }
@@ -229,35 +242,54 @@ class UIGenerator {
     return InkWell(
         onTap: func,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: UIGenerator.toUnits(14), horizontal: UIGenerator.toUnits(30)),
+          padding: EdgeInsets.symmetric(
+              vertical: UIGenerator.toUnits(14),
+              horizontal: UIGenerator.toUnits(30)),
           decoration: BoxDecoration(
-            border: Border.all(color: UIGenerator.orange, width: UIGenerator.toUnits(2)),
+              border: Border.all(
+                  color: UIGenerator.orange, width: UIGenerator.toUnits(2)),
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(UIGenerator.toUnits(6)))),
           child: coloredText(text, UIGenerator.orange),
         ));
   }
 
-  static Widget StarRatingAnswerDisplay(int value, bool disabled){
-    Widget highlighted = Icon(Icons.star, size: UIGenerator.toUnits(24), color: disabled ?  UIGenerator.grey : UIGenerator.yellow,);
-    Widget notHighlighted = Icon(Icons.star_border, size: UIGenerator.toUnits(24), color:  UIGenerator.grey);
+  static Widget StarRatingAnswerDisplay(int value, bool disabled) {
+    Widget highlighted = Icon(
+      Icons.star,
+      size: UIGenerator.toUnits(24),
+      color: disabled ? UIGenerator.grey : UIGenerator.yellow,
+    );
+    Widget notHighlighted = Icon(Icons.star_border,
+        size: UIGenerator.toUnits(24), color: UIGenerator.grey);
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-      UIGenerator.coloredText(value.toString(), disabled ? UIGenerator.grey : UIGenerator.yellow),
-      SizedBox(width: UIGenerator.toUnits(6),),
-      1 <= value ? highlighted : notHighlighted,
-      SizedBox(width: UIGenerator.toUnits(8),),
-      2 <= value ? highlighted : notHighlighted,
-      SizedBox(width: UIGenerator.toUnits(8),),
-      3 <= value ? highlighted : notHighlighted,
-      SizedBox(width: UIGenerator.toUnits(8),),
-      4 <= value ? highlighted : notHighlighted,
-      SizedBox(width: UIGenerator.toUnits(8),),
-      5 <= value ? highlighted : notHighlighted
-    ],);
+        UIGenerator.coloredText(
+            value.toString(), disabled ? UIGenerator.grey : UIGenerator.yellow),
+        SizedBox(
+          width: UIGenerator.toUnits(6),
+        ),
+        1 <= value ? highlighted : notHighlighted,
+        SizedBox(
+          width: UIGenerator.toUnits(8),
+        ),
+        2 <= value ? highlighted : notHighlighted,
+        SizedBox(
+          width: UIGenerator.toUnits(8),
+        ),
+        3 <= value ? highlighted : notHighlighted,
+        SizedBox(
+          width: UIGenerator.toUnits(8),
+        ),
+        4 <= value ? highlighted : notHighlighted,
+        SizedBox(
+          width: UIGenerator.toUnits(8),
+        ),
+        5 <= value ? highlighted : notHighlighted
+      ],
+    );
   }
-
-  
 }
